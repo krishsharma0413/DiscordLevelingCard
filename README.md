@@ -19,7 +19,7 @@ A library with Rank cards for your discord bot.
 pip install discordlevelingcard
 ```
 
-for github developement version
+`for github developement version`
 ```sh
 pip install git+https://github.com/ResetXD/DiscordLevelingCard
 ```
