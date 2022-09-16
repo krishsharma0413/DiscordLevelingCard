@@ -5,7 +5,7 @@ description = "A library with leveling cards for your discord bot."
 authors = ["Reset <resetwastakenwastaken@gmail.com>"]
 license = "MIT"
 packages = [
-    { include = "DiscordLevelingCard", from = "src" },
+    { include = "DiscordLevelingCard"},
 ]
 
 [tool.poetry.dependencies]
@@ -13,7 +13,7 @@ python = ">=3.8,<4"
 aiohttp = "^3.8.1"
 requests = "^2.28.1"
 disnake = "^2.5.2"
-pycord = "^0.1.1"
+nextcord = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
 
