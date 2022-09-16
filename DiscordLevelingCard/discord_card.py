@@ -38,10 +38,10 @@ class RankCard:
         The color of the text. This can be a hex code or a color name. Default is `white`
     
     path: :class:`Optional[PathLike]`
-        The path to save the rank card to. If this is not provided, `bytes` will be returned instead.
+        The path to save the rank card to. If this is not provided, `bytes` that can be added to any discord.py fork's `File` class instead.
     
     type: :class:`Optional[str]`
-        The type of the rank card. This can be `disnake.File` or `discord.File`(pycord). Default is `None`
+        The type of the rank card. This can be `disnake`(returns `disnake.File` class) or `nextcord`(returns `nextcord.File class`). Default is `None`
 
 
     Attributes
@@ -200,4 +200,7 @@ class RankCard:
                     image.seek(0)
                     return nextcordFile(fp=image, filename="rank.png")
         else:
-            return self.background.tobytes()
+            with BytesIO() as image:
+                self.background.save(image, 'PNG')
+                image.seek(0)
+                return image

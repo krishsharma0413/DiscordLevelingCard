@@ -38,6 +38,62 @@ If you don't provide `path` then the method will return `bytes` which can direct
 
 ```py
 
+from disnake.ext import commands
+from DiscordLevelingCard import RankCard
 import disnake
 
+client = commands.Bot()
 
+@client.slash_command(name="rank")
+async def user_rank_card(ctx, user:disnake.Member):
+    await ctx.response.defer()
+    a = RankCard(
+        background="./my_cool_background.png",
+        avatar=user.display_avatar.url,
+        level=1,
+        current_exp=1,
+        max_exp=1,
+        username="cool username",
+        type="disnake"
+    )
+    image = await a.card1()
+    await ctx.edit_original_message(file=image)
+
+```
+
+`or you can use no type`
+
+```py
+@client.slash_command(name="rank")
+async def user_rank_card(ctx, user:disnake.Member):
+    await ctx.response.defer()
+    a = RankCard(
+        background=user.banner.url,
+        avatar=user.display_avatar.url,
+        level=1,
+        current_exp=1,
+        max_exp=1,
+        username="cool username"
+    )
+    image = await a.card1()
+    await ctx.edit_original_message(file=disnake.File(image))
+```
+
+`if you want to use path`
+```py
+@client.slash_command(name="rank")
+async def user_rank_card(ctx, user:disnake.Member):
+    await ctx.response.defer()
+    a = RankCard(
+        background=user.banner.url,
+        avatar=user.display_avatar.url,
+        level=1,
+        current_exp=1,
+        max_exp=1,
+        username="cool username",
+        path="./user_cards/rank_card.png"
+    )
+    # image return the path provided i.e. "./user_cards/rank_card.png"
+    image = await a.card1()
+    await ctx.edit_original_message(file=disnake.File(image))
+```
