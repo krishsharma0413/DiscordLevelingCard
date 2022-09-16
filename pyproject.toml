@@ -1,10 +1,19 @@
 [tool.poetry]
 name = "discordlevelingcard"
-version = "0.1.8"
+version = "0.1.9"
 readme = "README.md"
 description = "A library with leveling cards for your discord bot."
+repository = "https://github.com/ResetXD/DiscordLevelingCard"
 authors = ["Reset <resetwastakenwastaken@gmail.com>"]
 license = "MIT"
+keywords = [
+    "discord", "leveling", "card",
+    "image", "discord.py", "disnake",
+    "nextcord", "rank", "ranking",
+    "level", "discord-bot", "bot",
+    "discord-leveling", "level-card",
+    "discord-leveling-card", "discord-rank-card"
+]
 packages = [
     { include = "DiscordLevelingCard"},
 ]
