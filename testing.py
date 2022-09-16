@@ -33,6 +33,3 @@ async def not_Testing(ctx):
     )
     image = await a.card1()
     await ctx.edit_original_message(file=image)
-
-
-client.run("MTAxODkzNTg5MTgyNzM2Nzk4OA.G2wqQL.5j0Qe6Yy-AFJQP8eLoVXIn5F0mHfCNZ9TBZejc")
