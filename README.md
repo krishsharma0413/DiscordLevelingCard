@@ -1,5 +1,5 @@
 # DiscordLevelingCard
-[ WIP ] A library with leveling cards for your discord bot.
+A library with Rank cards for your discord bot.
 
 <br>
 

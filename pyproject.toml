@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "discordlevelingcard"
-version = "0.1.0"
+version = "0.1.5"
 description = "A library with leveling cards for your discord bot."
 authors = ["Reset <resetwastakenwastaken@gmail.com>"]
 license = "MIT"
