@@ -68,7 +68,7 @@ async def user_rank_card(ctx, user:disnake.Member):
 async def user_rank_card(ctx, user:disnake.Member):
     await ctx.response.defer()
     a = RankCard(
-        background=user.banner.url,
+        background="https://cool-banner-url.com",
         avatar=user.display_avatar.url,
         level=1,
         current_exp=1,
