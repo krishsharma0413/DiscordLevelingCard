@@ -82,3 +82,59 @@ async def user_rank_card(ctx, user:disnake.Member):
     image = await a.card1()
     await ctx.edit_original_message(file=disnake.File(image, filename="rank.png")) # providing filename is very important
 ```
+
+
+## Documentation
+
+`RankCard` class
+
+`__init__` method
+
+```py
+RankCard(
+    background:Union[PathLike, BufferedIOBase],
+    avatar:Union[PathLike, BufferedIOBase],
+    level:int,
+    current_exp:int,
+    max_exp:int,
+    username:str,
+    bar_color:str="white",
+    text_color:str="white",
+    path:str=None
+)
+```
+
+`background` - background image url or file-object in `rb` mode
+
+`avatar` - avatar image url or file-object in `rb` mode
+
+`level` - level of the user
+
+`current_exp` - current exp of the user
+
+`max_exp` - max exp of the user
+
+`username` - username of the user
+
+`bar_color` - color of the bar [example: "white" or "#000000"]
+
+`text_color` - color of the text [example: "white" or "#000000"]
+
+`path` - path to save the card [if not provided will return `bytes` instead]
+
+<br>
+
+`card1` method
+
+```py
+RankCard.card1()
+```
+
+`returns` - `path` if `path` was provided in `__init__` or `bytes` if `path` was not provided in `__init__`
+
+<br>
+
+## todo
+
+- [ ] add more cards
+- [ ] better documentation
