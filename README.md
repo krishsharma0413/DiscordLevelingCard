@@ -56,7 +56,7 @@ async def user_rank_card(ctx, user:disnake.Member):
         username="cool username"
     )
     image = await a.card1()
-    await ctx.edit_original_message(file=disnake.File(image))
+    await ctx.edit_original_message(file=disnake.File(image, filename="rank.png")) # providing filename is very important
 
 ```
 
@@ -80,5 +80,5 @@ async def user_rank_card(ctx, user:disnake.Member):
     )
     # image return the path provided i.e. "./user_cards/rank_card.png"
     image = await a.card1()
-    await ctx.edit_original_message(file=disnake.File(image))
+    await ctx.edit_original_message(file=disnake.File(image, filename="rank.png")) # providing filename is very important
 ```
