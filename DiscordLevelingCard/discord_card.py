@@ -5,8 +5,6 @@ from typing import Optional, Union
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 from .error import InvalidImageType, InvalidImageUrl
-from disnake import File as disnakeFile
-from nextcord import File as nextcordFile
 
 class RankCard:
     """Class for creating a rank cards
@@ -40,9 +38,6 @@ class RankCard:
     path: :class:`Optional[PathLike]`
         The path to save the rank card to. If this is not provided, `bytes` that can be added to any discord.py fork's `File` class instead.
     
-    type: :class:`Optional[str]`
-        The type of the rank card. This can be `disnake`(returns `disnake.File` class) or `nextcord`(returns `nextcord.File class`). Default is `None`
-
 
     Attributes
     ----------
@@ -55,10 +50,9 @@ class RankCard:
     - `bar_color`
     - `text_color`
     - `path`
-    - `type`
     """
 
-    __slots__ = ('background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path', 'type')
+    __slots__ = ('background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path')
 
 
 
@@ -73,7 +67,6 @@ class RankCard:
         bar_color:Optional[str]="white",
         text_color:Optional[str]="white",
         path:Optional[str]=None,
-        type:Optional[str]=None
     )-> None:
         self.background = background
         self.avatar = avatar
@@ -84,7 +77,6 @@ class RankCard:
         self.bar_color = bar_color
         self.text_color = text_color
         self.path = path
-        self.type = type
 
     @staticmethod
     def convert_number(number: int) -> str:
@@ -189,16 +181,6 @@ class RankCard:
         if self.path is not None:
             self.background.save(self.path, "PNG")
             return self.path
-        elif self.type == "disnake":
-            with BytesIO() as image:
-                    self.background.save(image, 'PNG')
-                    image.seek(0)
-                    return disnakeFile(fp=image, filename="rank.png")
-        elif self.type == "nextcord":
-            with BytesIO() as image:
-                    self.background.save(image, 'PNG')
-                    image.seek(0)
-                    return nextcordFile(fp=image, filename="rank.png")
         else:
             with BytesIO() as image:
                 self.background.save(image, 'PNG')
