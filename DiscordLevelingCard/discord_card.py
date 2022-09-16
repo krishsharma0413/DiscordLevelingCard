@@ -182,7 +182,7 @@ class RankCard:
             self.background.save(self.path, "PNG")
             return self.path
         else:
-            with BytesIO() as image:
-                self.background.save(image, 'PNG')
-                image.seek(0)
-                return image
+            image = BytesIO()
+            self.background.save(image, 'PNG')
+            image.seek(0)
+            return image
