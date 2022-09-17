@@ -5,6 +5,7 @@ from typing import Optional, Union
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 from .error import InvalidImageType, InvalidImageUrl
+from pathlib import Path
 
 class RankCard:
     """Class for creating a rank cards
@@ -41,6 +42,7 @@ class RankCard:
 
     Attributes
     ----------
+    - `main`
     - `background`
     - `avatar`
     - `level`
@@ -52,7 +54,7 @@ class RankCard:
     - `path`
     """
 
-    __slots__ = ('background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path')
+    __slots__ = ('main', 'background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path')
 
 
 
@@ -68,6 +70,7 @@ class RankCard:
         text_color:Optional[str]="white",
         path:Optional[str]=None,
     )-> None:
+        self.main = str(Path(__file__).parent)
         self.background = background
         self.avatar = avatar
         self.level = level
@@ -106,7 +109,6 @@ class RankCard:
         
         ![card](https://cdn.discordapp.com/attachments/907213435358547968/1019966057294860328/final.png)
         """
-        
         if isinstance(self.background, IOBase):
             if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
                 raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
@@ -133,7 +135,7 @@ class RankCard:
 
         self.avatar = self.avatar.resize((170,170))
 
-        overlay = Image.open("./assets/overlay1.png")
+        overlay = Image.open(self.main + "/assets/overlay1.png")
         background = Image.new("RGBA", overlay.size)
         backgroundover = self.background.resize((638,159))
         background.paste(backgroundover,(0,0))
@@ -141,7 +143,7 @@ class RankCard:
         self.background = background.resize(overlay.size)
         self.background.paste(overlay,(0,0),overlay)
 
-        myFont = ImageFont.truetype("./assets/levelfont.otf",40)
+        myFont = ImageFont.truetype(self.main + "/assets/levelfont.otf",40)
         draw = ImageDraw.Draw(self.background)
 
         draw.text((205,(327/2)+20), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
@@ -154,13 +156,13 @@ class RankCard:
         max_exp = RankCard.convert_number(self.max_exp)
         
 
-        myFont = ImageFont.truetype("./assets/levelfont.otf",30)
+        myFont = ImageFont.truetype(self.main + "/assets/levelfont.otf",30)
         draw.text((197,(327/2)+125), f"LEVEL - {RankCard.convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
         w,h = draw.textsize(f"{current_exp}/{max_exp}", font=myFont)
         draw.text((638-w-50,(327/2)+125), f"{current_exp}/{max_exp}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        mask_im = Image.open("./assets/mask_circle.jpg").convert('L').resize((170,170))
+        mask_im = Image.open(self.main + "/assets/mask_circle.jpg").convert('L').resize((170,170))
         new = Image.new("RGB", self.avatar.size, (0, 0, 0))
         try:
             new.paste(self.avatar, mask=self.avatar.convert("RGBA").split()[3])
@@ -175,7 +177,7 @@ class RankCard:
         draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
         self.background.paste(im, (190, 235))
         new = Image.new("RGBA", self.background.size)
-        new.paste(self.background,(0, 0), Image.open("./assets/curvedoverlay.png").convert("L"))
+        new.paste(self.background,(0, 0), Image.open(self.main + "/assets/curvedoverlay.png").convert("L"))
         self.background = new.resize((505, 259))
 
         if self.path is not None:
