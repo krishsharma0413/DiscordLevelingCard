@@ -102,7 +102,7 @@ RankCard(
 - `max_exp` - max exp of the user.
 
 - `username` - username of the user.
-- 
+
 </details>
 
 <details>
