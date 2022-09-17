@@ -39,15 +39,22 @@ If you don't provide `path` then the method will return `bytes` which can direct
 ```py
 
 from disnake.ext import commands
-from DiscordLevelingCard import RankCard
+from DiscordLevelingCard import RankCard, Settings
 import disnake
 
 client = commands.Bot()
+# define background, bar_color, text_color at one place
+card_settings = Settings(
+    background="url or path to background image",
+    text_color="white",
+    bar_color="#000000"
+)
 
 @client.slash_command(name="rank")
 async def user_rank_card(ctx, user:disnake.Member):
     await ctx.response.defer()
     a = RankCard(
+        settings=card_settings
         background=user.banner.url,
         avatar=user.display_avatar.url,
         level=1,
@@ -62,79 +69,83 @@ async def user_rank_card(ctx, user:disnake.Member):
 
 <br>
 
-`if you want to use path`
-```py
-@client.slash_command(name="rank")
-async def user_rank_card(ctx, user:disnake.Member):
-    await ctx.response.defer()
-    a = RankCard(
-        background="https://cool-banner-url.com",
-        avatar=user.display_avatar.url,
-        level=1,
-        current_exp=1,
-        max_exp=1,
-        username="cool username",
-        bar_color="red",
-        text_color="white",
-        path="./user_cards/rank_card.png"
-    )
-    # image return the path provided i.e. "./user_cards/rank_card.png"
-    image = await a.card1()
-    await ctx.edit_original_message(file=disnake.File(image, filename="rank.png")) # providing filename is very important
-```
-
-
 ## Documentation
 
-`RankCard` class
+
+<details>
+
+<summary> <span style="color:yellow">RankCard</span> class</summary>
+
+<br>
 
 `__init__` method
 
 ```py
 RankCard(
-    background:Union[PathLike, BufferedIOBase],
-    avatar:Union[PathLike, BufferedIOBase],
+    settings: Settings,
+    avatar:str,
     level:int,
     current_exp:int,
     max_exp:int,
     username:str,
-    bar_color:str="white",
-    text_color:str="white",
-    path:str=None
 )
 ```
 
-`background` - background image url or file-object in `rb` mode
+- `settings` - Settings class from DiscordLevelingCard.
 
-`avatar` - avatar image url or file-object in `rb` mode
+- `avatar` - avatar image url.
 
-`level` - level of the user
+- `level` - level of the user.
 
-`current_exp` - current exp of the user
+- `current_exp` - current exp of the user.
 
-`max_exp` - max exp of the user
+- `max_exp` - max exp of the user.
 
-`username` - username of the user
+- `username` - username of the user.
+- 
+</details>
 
-`bar_color` - color of the bar [example: "white" or "#000000"]
+<details>
 
-`text_color` - color of the text [example: "white" or "#000000"]
-
-`path` - path to save the card [if not provided will return `bytes` instead]
+<summary> <span style="color:yellow">Settings</span> class</summary>
 
 <br>
 
-`card1` method
+`__init__` method
+
+```py
+RankCard(
+    backgroud: Union[PathLike, BufferedIOBase, str],
+    bar_color: Optional[str] = 'white',
+    text_color: Optional[str] = 'white'
+
+)
+```
+
+- `background` - background image url or file-object in `rb` mode.
+
+- `bar_color` - color of the bar [example: "white" or "#000000"]
+
+- `text_color` - color of the text [example: "white" or "#000000"]
+
+</details>
+
+
+<details>
+
+<summary> <span style="color:yellow">card1</span> method</summary>
+
 
 ```py
 RankCard.card1()
 ```
 
-`returns` - `path` if `path` was provided in `__init__` or `bytes` if `path` was not provided in `__init__`
+`returns` - `bytes` which can directly be used within `discord.File` class.
+
+
+
+![card1](https://cdn.discordapp.com/attachments/907213435358547968/994620579816681572/unknown.png)
 
 <br>
 
-## todo
-
-- [ ] add more cards
-- [ ] better documentation
+</details>

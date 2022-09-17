@@ -6,12 +6,16 @@ from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 from .error import InvalidImageType, InvalidImageUrl
 from pathlib import Path
+from .card_settings import Settings
 
 class RankCard:
     """Class for creating a rank cards
 
     Parameters
     ----------
+    settings: :class:`Settings`
+        The settings for the rank card
+
     background: :class:`Union[PathLike, BufferedIOBase]`
         The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode
 
@@ -30,59 +34,50 @@ class RankCard:
     max_exp: :class:`int`
         The amount of XP required for the member to level up
     
-    bar_color: :class:`Optional[str]`
-        The color of the XP bar. This can be a hex code or a color name. Default is `white`
-    
-    text_color: :class:`Optional[str]`
-        The color of the text. This can be a hex code or a color name. Default is `white`
-    
-    path: :class:`Optional[PathLike]`
-        The path to save the rank card to. If this is not provided, `bytes` that can be added to any discord.py fork's `File` class instead.
     
 
     Attributes
     ----------
-    - `main`
-    - `background`
+    - `settings`
     - `avatar`
     - `level`
     - `username`
     - `current_exp`
     - `max_exp`
-    - `bar_color`
-    - `text_color`
-    - `path`
+
+    Raises
+    ------
+    - `InvalidImageType`
+        If the image type is not supported
+    - `InvalidImageUrl`
+        If the image url is invalid
+
     """
 
-    __slots__ = ('main', 'background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path')
+    __slots__ = ('background', 'text_color', 'bar_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp')
 
 
 
     def __init__(
         self,
-        background: Union[PathLike, BufferedIOBase],
-        avatar: Union[PathLike, BufferedIOBase],
+        settings: Settings,
+        avatar: str,
         level:int,
         username:str,
         current_exp:int,
         max_exp:int,
-        bar_color:Optional[str]="white",
-        text_color:Optional[str]="white",
-        path:Optional[str]=None,
     )-> None:
-        self.main = str(Path(__file__).parent)
-        self.background = background
+        self.background = settings.background
         self.avatar = avatar
         self.level = level
         self.username = username
         self.current_exp = current_exp
         self.max_exp = max_exp
-        self.bar_color = bar_color
-        self.text_color = text_color
-        self.path = path
+        self.bar_color = settings.bar_color
+        self.text_color = settings.text_color
 
     @staticmethod
-    def convert_number(number: int) -> str:
+    def _convert_number(number: int) -> str:
         if number >= 1000000000:
             return f"{number / 1000000000:.1f}B"
         elif number >= 1000000:
@@ -93,7 +88,7 @@ class RankCard:
             return str(number)
 
     @staticmethod
-    async def image_(url:str):
+    async def _image(url:str):
         async with ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
@@ -102,40 +97,34 @@ class RankCard:
                 return Image.open(BytesIO(data))
 
 
-
     async def card1(self)-> Union[None, bytes]:
         """
         Creates the rank card and saves it to the path provided in `self.path` or returns `bytes` if `self.path` is not provided
         
         ![card](https://cdn.discordapp.com/attachments/907213435358547968/1019966057294860328/final.png)
         """
+        path = str(Path(__file__).parent)
         if isinstance(self.background, IOBase):
             if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
                 raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
             self.background = Image.open(self.background)
         elif isinstance(self.background, str):
             if self.background.startswith("http"):
-                self.background = await RankCard.image_(self.background)
+                self.background = await RankCard._image(self.background)
             else:
                 self.background = Image.open(open(self.background, "rb"))
         else:
             raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
 
-        if isinstance(self.avatar, IOBase):
-            if not (self.avatar.seekable() and self.avatar.readable() and self.avatar.mode == "rb"):
-                raise ValueError(f"File buffer {self.avatar!r} must be seekable and readable and in binary mode")
-            self.avatar = Image.open(self.avatar)
-        elif isinstance(self.avatar, str):
+        if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
-                self.avatar = await RankCard.image_(self.avatar)
-            else:
-                self.avatar = Image.open(open(self.avatar, "rb"))
+                self.avatar = await RankCard._image(self.avatar)
         else:
             raise TypeError(f"avatar must be a path or url or a file buffer, not {type(self.background)}") 
 
         self.avatar = self.avatar.resize((170,170))
 
-        overlay = Image.open(self.main + "/assets/overlay1.png")
+        overlay = Image.open(path + "/assets/overlay1.png")
         background = Image.new("RGBA", overlay.size)
         backgroundover = self.background.resize((638,159))
         background.paste(backgroundover,(0,0))
@@ -143,7 +132,7 @@ class RankCard:
         self.background = background.resize(overlay.size)
         self.background.paste(overlay,(0,0),overlay)
 
-        myFont = ImageFont.truetype(self.main + "/assets/levelfont.otf",40)
+        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",40)
         draw = ImageDraw.Draw(self.background)
 
         draw.text((205,(327/2)+20), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
@@ -151,18 +140,18 @@ class RankCard:
         if bar_exp <= 50:
             bar_exp = 50    
 
-        current_exp = RankCard.convert_number(self.current_exp)
+        current_exp = RankCard._convert_number(self.current_exp)
         
-        max_exp = RankCard.convert_number(self.max_exp)
+        max_exp = RankCard._convert_number(self.max_exp)
         
 
-        myFont = ImageFont.truetype(self.main + "/assets/levelfont.otf",30)
-        draw.text((197,(327/2)+125), f"LEVEL - {RankCard.convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",30)
+        draw.text((197,(327/2)+125), f"LEVEL - {RankCard._convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        w,h = draw.textsize(f"{current_exp}/{max_exp}", font=myFont)
+        w,_ = draw.textsize(f"{current_exp}/{max_exp}", font=myFont)
         draw.text((638-w-50,(327/2)+125), f"{current_exp}/{max_exp}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        mask_im = Image.open(self.main + "/assets/mask_circle.jpg").convert('L').resize((170,170))
+        mask_im = Image.open(path + "/assets/mask_circle.jpg").convert('L').resize((170,170))
         new = Image.new("RGB", self.avatar.size, (0, 0, 0))
         try:
             new.paste(self.avatar, mask=self.avatar.convert("RGBA").split()[3])
@@ -177,14 +166,10 @@ class RankCard:
         draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
         self.background.paste(im, (190, 235))
         new = Image.new("RGBA", self.background.size)
-        new.paste(self.background,(0, 0), Image.open(self.main + "/assets/curvedoverlay.png").convert("L"))
+        new.paste(self.background,(0, 0), Image.open(path + "/assets/curvedoverlay.png").convert("L"))
         self.background = new.resize((505, 259))
 
-        if self.path is not None:
-            self.background.save(self.path, "PNG")
-            return self.path
-        else:
-            image = BytesIO()
-            self.background.save(image, 'PNG')
-            image.seek(0)
-            return image
+        image = BytesIO()
+        self.background.save(image, 'PNG')
+        image.seek(0)
+        return image
