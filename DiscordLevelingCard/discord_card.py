@@ -89,7 +89,7 @@ class RankCard:
 
     @staticmethod
     async def _image(url:str):
-        async with ClientSession() as session:
+        async with ClientSession()   as session:
             async with session.get(url) as response:
                 if response.status != 200:
                     raise InvalidImageUrl(f"Invalid image url: {url}")
