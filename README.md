@@ -10,6 +10,10 @@ A library with Rank cards for your discord bot.
 ![card1](https://cdn.discordapp.com/attachments/907213435358547968/994620579816681572/unknown.png)
 
 
+`card2`
+![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
+
+
 <br>
 
 ## installation
@@ -88,6 +92,7 @@ RankCard(
     current_exp:int,
     max_exp:int,
     username:str,
+    rank: Optional[int] = None
 )
 ```
 
@@ -103,6 +108,8 @@ RankCard(
 
 - `username` - username of the user.
 
+- `rank` - rank of the user. (optional)
+
 </details>
 
 <details>
@@ -115,18 +122,22 @@ RankCard(
 
 ```py
 RankCard(
-    backgroud: Union[PathLike, BufferedIOBase, str],
+    background: Union[PathLike, BufferedIOBase, str],
     bar_color: Optional[str] = 'white',
-    text_color: Optional[str] = 'white'
+    text_color: Optional[str] = 'white',
+    background_color: Optional[str]= "#36393f"
 
 )
 ```
 
 - `background` - background image url or file-object in `rb` mode.
+  - `4:1` aspect ratio recommended.
 
 - `bar_color` - color of the bar [example: "white" or "#000000"]
 
 - `text_color` - color of the text [example: "white" or "#000000"]
+
+- `background_color` - color of the background [example: "white" or "#000000"]
 
 </details>
 
@@ -145,6 +156,26 @@ RankCard.card1()
 
 
 ![card1](https://cdn.discordapp.com/attachments/907213435358547968/994620579816681572/unknown.png)
+
+<br>
+
+</details>
+
+
+<details>
+
+<summary> <span style="color:yellow">card2</span> method</summary>
+
+
+```py
+RankCard.card2()
+```
+
+`returns` - `bytes` which can directly be used within `discord.File` class.
+
+
+
+![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
 
 <br>
 

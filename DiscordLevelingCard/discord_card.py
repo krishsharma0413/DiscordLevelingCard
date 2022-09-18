@@ -16,9 +16,6 @@ class RankCard:
     settings: :class:`Settings`
         The settings for the rank card
 
-    background: :class:`Union[PathLike, BufferedIOBase]`
-        The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode
-
     avatar: :class:`Union[PathLike, BufferedIOBase]`
         The avatar image for the rank card. This can be a path to a file or a file-like object in `rb` mode
     
@@ -34,6 +31,9 @@ class RankCard:
     max_exp: :class:`int`
         The amount of XP required for the member to level up
     
+    rank: Optional[:class:`int`]
+        The rank of the member.
+    
     
 
     Attributes
@@ -44,6 +44,7 @@ class RankCard:
     - `username`
     - `current_exp`
     - `max_exp`
+    - `rank`
 
     Raises
     ------
@@ -54,7 +55,7 @@ class RankCard:
 
     """
 
-    __slots__ = ('background', 'text_color', 'bar_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp')
+    __slots__ = ('background', 'rank', 'background_color', 'text_color', 'bar_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp')
 
 
 
@@ -66,10 +67,13 @@ class RankCard:
         username:str,
         current_exp:int,
         max_exp:int,
+        rank:Optional[int] = None,
     )-> None:
         self.background = settings.background
+        self.background_color = settings.background_color
         self.avatar = avatar
         self.level = level
+        self.rank = rank
         self.username = username
         self.current_exp = current_exp
         self.max_exp = max_exp
@@ -99,7 +103,7 @@ class RankCard:
 
     async def card1(self)-> Union[None, bytes]:
         """
-        Creates the rank card and saves it to the path provided in `self.path` or returns `bytes` if `self.path` is not provided
+        Creates the rank card and returns `bytes`
         
         ![card](https://cdn.discordapp.com/attachments/907213435358547968/1019966057294860328/final.png)
         """
@@ -171,5 +175,67 @@ class RankCard:
 
         image = BytesIO()
         self.background.save(image, 'PNG')
+        image.seek(0)
+        return image
+
+
+    async def card2(self)-> Union[None, bytes]:
+        """
+        Creates the rank card and returns `bytes`
+        
+        ![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
+        """
+        path = str(Path(__file__).parent)
+
+        if isinstance(self.avatar, str):
+            if self.avatar.startswith("http"):
+                self.avatar = await RankCard._image(self.avatar)
+        else:
+            raise TypeError(f"avatar must be a path or url or a file buffer, not {type(self.background)}") 
+
+        background = Image.new("RGB", (1000, 333), self.background_color)
+        background.paste(Image.new("RGB", (950, 333-50), "#2f3136"), (25, 25) )
+
+        avatar = self.avatar.resize((260, 260))
+
+        mask = Image.open(path + "/assets/curveborder.png").resize((260, 260))
+
+        new = Image.new("RGBA", avatar.size, (0, 0, 0))
+        try:
+            new.paste(avatar, mask=avatar.convert("RGBA").split()[3])
+        except:
+            new.paste(avatar, (0,0))
+        
+        background.paste(new, (53, 73//2), mask.convert("L"))
+
+        # background.paste(avatar, (53, 73//2), mask.convert("L"))
+
+        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",50)
+        draw = ImageDraw.Draw(background)
+
+        if self.rank is not None:
+            combined = "LEVEL: " + self._convert_number(self.level) + "       " + "RANK: " + str(self.rank)
+        else:
+            combined = "LEVEL: " + self._convert_number(self.level)
+        w = draw.textlength(combined, font=myFont)
+        draw.text((950-w,40), combined,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        draw.text((330,130), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+
+        exp = f"{self._convert_number(self.current_exp)}/{self._convert_number(self.max_exp)}"
+        w = draw.textlength(exp, font=myFont)
+        draw.text((950-w,130), exp,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+
+        bar_exp = (self.current_exp/self.max_exp)*619
+        if bar_exp <= 50:
+            bar_exp = 50  
+
+        im = Image.new("RGB", (620, 51), "#2f3136")
+        draw = ImageDraw.Draw(im, "RGBA")
+        draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,50))
+        draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        background.paste(im, (330, 235))
+
+        image = BytesIO()
+        background.save(image, 'PNG')
         image.seek(0)
         return image
