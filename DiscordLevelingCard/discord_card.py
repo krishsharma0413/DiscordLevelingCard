@@ -124,7 +124,7 @@ class RankCard:
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
         else:
-            raise TypeError(f"avatar must be a path or url or a file buffer, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url or a file buffer, not {type(self.background)}") 
 
         self.avatar = self.avatar.resize((170,170))
 
@@ -191,7 +191,7 @@ class RankCard:
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
         else:
-            raise TypeError(f"avatar must be a path or url or a file buffer, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url or a file buffer, not {type(self.background)}") 
 
         background = Image.new("RGB", (1000, 333), self.background_color)
         background.paste(Image.new("RGB", (950, 333-50), "#2f3136"), (25, 25) )
@@ -232,6 +232,77 @@ class RankCard:
         im = Image.new("RGB", (620, 51), "#2f3136")
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,50))
+        draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        background.paste(im, (330, 235))
+
+        image = BytesIO()
+        background.save(image, 'PNG')
+        image.seek(0)
+        return image
+
+    async def card3(self)-> Union[None, bytes]:
+        """
+        Creates the rank card and returns `bytes`
+        
+        ![card](https://cdn.discordapp.com/attachments/1018936393659076668/1022149875544113172/rank.png)
+        """
+        path = str(Path(__file__).parent)
+
+        if isinstance(self.background, IOBase):
+            if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
+                raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
+            self.background = Image.open(self.background)
+        elif isinstance(self.background, str):
+            if self.background.startswith("http"):
+                self.background = await RankCard._image(self.background)
+            else:
+                self.background = Image.open(open(self.background, "rb"))
+        else:
+            raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
+
+        if isinstance(self.avatar, str):
+            if self.avatar.startswith("http"):
+                self.avatar = await RankCard._image(self.avatar)
+        else:
+            raise TypeError(f"avatar must be a url or a file buffer, not {type(self.background)}") 
+
+        background = self.background.resize((1000, 333))
+        cut = Image.new("RGBA", (950, 333-50) , (0, 0, 0, 200))
+        background.paste(cut, (25, 25) ,cut)
+
+        avatar = self.avatar.resize((260, 260))
+
+        mask = Image.open(path + "/assets/curveborder.png").resize((260, 260))
+
+        new = Image.new("RGBA", avatar.size, (0, 0, 0))
+        try:
+            new.paste(avatar, mask=avatar.convert("RGBA").split()[3])
+        except:
+            new.paste(avatar, (0,0))
+        
+        background.paste(new, (53, 73//2), mask.convert("L"))
+        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",50)
+        draw = ImageDraw.Draw(background)
+
+        if self.rank is not None:
+            combined = "LEVEL: " + self._convert_number(self.level) + "       " + "RANK: " + str(self.rank)
+        else:
+            combined = "LEVEL: " + self._convert_number(self.level)
+        w = draw.textlength(combined, font=myFont)
+        draw.text((950-w,40), combined,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        draw.text((330,130), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+
+        exp = f"{self._convert_number(self.current_exp)}/{self._convert_number(self.max_exp)}"
+        w = draw.textlength(exp, font=myFont)
+        draw.text((950-w,130), exp,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+
+        bar_exp = (self.current_exp/self.max_exp)*619
+        if bar_exp <= 50:
+            bar_exp = 50  
+
+        im = Image.new("RGBA", (620, 51))
+        draw = ImageDraw.Draw(im, "RGBA")
+        draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,225))
         draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
         background.paste(im, (330, 235))
 

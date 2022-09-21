@@ -14,6 +14,10 @@ A library with Rank cards for your discord bot.
 ![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
 
 
+`card3` *same as card2 but with background*
+![card](https://cdn.discordapp.com/attachments/1018936393659076668/1022149875544113172/rank.png)
+
+
 <br>
 
 ## installation
@@ -176,6 +180,26 @@ RankCard.card2()
 
 
 ![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
+
+<br>
+
+</details>
+
+
+<details>
+
+<summary> <span style="color:yellow">card3</span> method</summary>
+
+
+```py
+RankCard.card3()
+```
+
+`returns` - `bytes` which can directly be used within `discord.File` class.
+
+
+
+![card](https://cdn.discordapp.com/attachments/1018936393659076668/1022149875544113172/rank.png)
 
 <br>
 
