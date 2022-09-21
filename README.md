@@ -64,7 +64,6 @@ async def user_rank_card(ctx, user:disnake.Member):
     await ctx.response.defer()
     a = RankCard(
         settings=card_settings,
-        background=user.banner.url,
         avatar=user.display_avatar.url,
         level=1,
         current_exp=1,
@@ -126,7 +125,7 @@ RankCard(
 `__init__` method
 
 ```py
-RankCard(
+Settings(
     background: Union[PathLike, BufferedIOBase, str],
     bar_color: Optional[str] = 'white',
     text_color: Optional[str] = 'white',
