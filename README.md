@@ -59,7 +59,7 @@ card_settings = Settings(
 async def user_rank_card(ctx, user:disnake.Member):
     await ctx.response.defer()
     a = RankCard(
-        settings=card_settings
+        settings=card_settings,
         background=user.banner.url,
         avatar=user.display_avatar.url,
         level=1,
