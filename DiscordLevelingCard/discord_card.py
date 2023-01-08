@@ -1,10 +1,9 @@
-from io import BufferedIOBase, BytesIO, IOBase
-from os import PathLike
+from io import BytesIO
 from typing import Optional, Union
 
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
-from .error import InvalidImageType, InvalidImageUrl
+from .error import InvalidImageUrl
 from pathlib import Path
 from .card_settings import Settings
 
@@ -32,9 +31,7 @@ class RankCard:
         The amount of XP required for the member to level up
     
     rank: Optional[:class:`int`]
-        The rank of the member.
-    
-    
+        The rank of the member. Default is `None`
 
     Attributes
     ----------
@@ -45,6 +42,15 @@ class RankCard:
     - `current_exp`
     - `max_exp`
     - `rank`
+
+    Methods
+    -------
+    - `card1`
+        Creates a rank card with the first design
+    - `card2`
+        Creates a rank card with the second design
+    - `card3`
+        Creates a rank card with the third design
 
     Raises
     ------
@@ -108,23 +114,12 @@ class RankCard:
         ![card](https://cdn.discordapp.com/attachments/907213435358547968/1019966057294860328/final.png)
         """
         path = str(Path(__file__).parent)
-        if isinstance(self.background, IOBase):
-            if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
-                raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
-            self.background = Image.open(self.background)
-        elif isinstance(self.background, str):
-            if self.background.startswith("http"):
-                self.background = await RankCard._image(self.background)
-            else:
-                self.background = Image.open(open(self.background, "rb"))
-        else:
-            raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
 
         if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
         else:
-            raise TypeError(f"avatar must be a url or a file buffer, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
         self.avatar = self.avatar.resize((170,170))
 
@@ -148,7 +143,6 @@ class RankCard:
         
         max_exp = RankCard._convert_number(self.max_exp)
         
-
         myFont = ImageFont.truetype(path + "/assets/levelfont.otf",30)
         draw.text((197,(327/2)+125), f"LEVEL - {RankCard._convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
@@ -191,7 +185,7 @@ class RankCard:
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
         else:
-            raise TypeError(f"avatar must be a url or a file buffer, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
         background = Image.new("RGB", (1000, 333), self.background_color)
         background.paste(Image.new("RGB", (950, 333-50), "#2f3136"), (25, 25) )
@@ -207,8 +201,6 @@ class RankCard:
             new.paste(avatar, (0,0))
         
         background.paste(new, (53, 73//2), mask.convert("L"))
-
-        # background.paste(avatar, (53, 73//2), mask.convert("L"))
 
         myFont = ImageFont.truetype(path + "/assets/levelfont.otf",50)
         draw = ImageDraw.Draw(background)
@@ -248,23 +240,11 @@ class RankCard:
         """
         path = str(Path(__file__).parent)
 
-        if isinstance(self.background, IOBase):
-            if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
-                raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
-            self.background = Image.open(self.background)
-        elif isinstance(self.background, str):
-            if self.background.startswith("http"):
-                self.background = await RankCard._image(self.background)
-            else:
-                self.background = Image.open(open(self.background, "rb"))
-        else:
-            raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
-
         if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
         else:
-            raise TypeError(f"avatar must be a url or a file buffer, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
         background = self.background.resize((1000, 333))
         cut = Image.new("RGBA", (950, 333-50) , (0, 0, 0, 200))

@@ -1,6 +1,10 @@
-from io import BufferedIOBase
+from io import BufferedIOBase, IOBase, BytesIO
 from os import PathLike
 from typing import Optional, Union
+from .error import InvalidImageType, InvalidImageUrl
+from requests import get
+from PIL import Image
+
 
 class Settings:
     """
@@ -41,3 +45,22 @@ class Settings:
         self.bar_color = bar_color
         self.text_color = text_color
         self.background_color = background_color
+
+        if isinstance(self.background, IOBase):
+            if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
+                raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
+            self.background = Image.open(self.background)
+        elif isinstance(self.background, str):
+            if self.background.startswith("http"):
+                self.background = Settings._image(self.background)
+            else:
+                self.background = Image.open(open(self.background, "rb"))
+        else:
+            raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
+
+    @staticmethod
+    async def _image(url:str):
+        response = get(url)
+        if response.status_code != 200:
+            raise InvalidImageUrl(f"Invalid image url: {url}")
+        return Image.open(BytesIO(response.content))
