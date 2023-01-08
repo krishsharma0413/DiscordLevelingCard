@@ -43,10 +43,9 @@ If you don't provide `path` then the method will return `bytes` which can direct
 
 ## Example
 
-`since no path was given, it returns bytes which can directly be used in discord.py and its fork 's File class.`
+`since no path was provided, it returns bytes which can directly be used in discord.py and its fork's File class.`
 
 ```py
-
 from disnake.ext import commands
 from DiscordLevelingCard import RankCard, Settings
 import disnake
