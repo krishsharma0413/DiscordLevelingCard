@@ -3,8 +3,8 @@ name = "discordlevelingcard"
 version = "0.4.2"
 readme = "README.md"
 description = "A library with leveling cards for your discord bot."
-repository = "https://github.com/ResetXD/DiscordLevelingCard"
-authors = ["Reset <resetwastakenwastaken@gmail.com>"]
+repository = "https://github.com/krishsharma0413/DiscordLevelingCard"
+authors = ["Reset <krishsharma0413@gmail.com>"]
 license = "MIT"
 keywords = [
     "discord", "leveling", "card",
