@@ -1,7 +1,6 @@
 # DiscordLevelingCard
 A library with Rank cards for your discord bot.
 
-
 [![Downloads](https://pepy.tech/badge/discordlevelingcard)](https://pepy.tech/project/discordlevelingcard)
 
 ## card preview
@@ -203,3 +202,6 @@ RankCard.card3()
 <br>
 
 </details>
+
+<br><br>
+please star the <a href="https://github.com/krishsharma0413/DiscordLevelingCard">repository</a> if you like it :D
