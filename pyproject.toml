@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "discordlevelingcard"
-version = "0.4.6"
+version = "0.4.7"
 readme = "README.md"
 description = "A library with leveling cards for your discord bot."
 repository = "https://github.com/krishsharma0413/DiscordLevelingCard"
@@ -23,6 +23,7 @@ include = ["DiscordLevelingCard/assets/*"]
 python = ">=3.8,<4"
 aiohttp = "^3.8.1"
 Pillow = "^9.2.0"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
 
