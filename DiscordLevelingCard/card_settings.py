@@ -59,7 +59,7 @@ class Settings:
             raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
 
     @staticmethod
-    async def _image(url:str):
+    def _image(url:str):
         response = get(url)
         if response.status_code != 200:
             raise InvalidImageUrl(f"Invalid image url: {url}")
