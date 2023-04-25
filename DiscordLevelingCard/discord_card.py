@@ -61,7 +61,7 @@ class RankCard:
 
     """
 
-    __slots__ = ('background', 'rank', 'background_color', 'text_color', 'bar_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp')
+    __slots__ = ('background', 'rank', 'background_color', 'text_color', 'bar_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'previous_exp')
 
 
 
@@ -73,6 +73,7 @@ class RankCard:
         username:str,
         current_exp:int,
         max_exp:int,
+        previous_exp:Optional[int] = 0,
         rank:Optional[int] = None,
     )-> None:
         self.background = settings.background
@@ -82,6 +83,7 @@ class RankCard:
         self.rank = rank
         self.username = username
         self.current_exp = current_exp
+        self.previous_exp = previous_exp
         self.max_exp = max_exp
         self.bar_color = settings.bar_color
         self.text_color = settings.text_color
@@ -282,7 +284,7 @@ class RankCard:
         w = draw.textlength(exp, font=myFont)
         draw.text((950-w,130), exp,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        bar_exp = (self.current_exp/self.max_exp)*619
+        bar_exp = round(((self.current_exp - self.previous_exp) / (self.max_exp - self.previous_exp)) * 619)
         if bar_exp <= 50:
             bar_exp = 50  
 
