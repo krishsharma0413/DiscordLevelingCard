@@ -118,6 +118,8 @@ class RankCard:
         if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
+        elif isinstance(self.avatar, Image.Image):
+            pass
         else:
             raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
@@ -184,6 +186,8 @@ class RankCard:
         if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
+        elif isinstance(self.avatar, Image.Image):
+            pass
         else:
             raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
@@ -243,6 +247,8 @@ class RankCard:
         if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
                 self.avatar = await RankCard._image(self.avatar)
+        elif isinstance(self.avatar, Image.Image):
+            pass
         else:
             raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
