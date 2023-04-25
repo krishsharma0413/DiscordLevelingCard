@@ -8,7 +8,8 @@ testing.py
 test.png
 final.png
 background.png
-
+bg.*
+avatarimg.*
 
 
 # C extensions
