@@ -7,11 +7,11 @@ A library with Rank cards for your discord bot.
 
 `card1`
 
-![card1](https://cdn.discordapp.com/attachments/907213435358547968/994620579816681572/unknown.png)
+![card1](https://user-images.githubusercontent.com/77439837/234198272-3dcaabb0-0f38-4d51-9938-de4b0ad42123.png)
 
 
 `card2`
-![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
+![card](https://user-images.githubusercontent.com/77439837/234198354-315e9420-9bd7-47bd-87ed-b21c3772646c.png)
 
 
 `card3` *same as card2 but with background*
@@ -157,7 +157,7 @@ RankCard.card1()
 
 
 
-![card1](https://cdn.discordapp.com/attachments/907213435358547968/994620579816681572/unknown.png)
+![card1](https://user-images.githubusercontent.com/77439837/234198272-3dcaabb0-0f38-4d51-9938-de4b0ad42123.png)
 
 <br>
 
@@ -177,7 +177,7 @@ RankCard.card2()
 
 
 
-![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
+![card](https://user-images.githubusercontent.com/77439837/234198354-315e9420-9bd7-47bd-87ed-b21c3772646c.png)
 
 <br>
 
