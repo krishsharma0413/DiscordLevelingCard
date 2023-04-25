@@ -31,6 +31,7 @@ class RankCard:
         The amount of XP required for the member to level up
     
     previous_exp: Optional[:class:`int`]
+        The amount of XP of the previous level
     
     rank: Optional[:class:`int`]
         The rank of the member. Default is `None`
