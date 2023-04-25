@@ -283,8 +283,8 @@ class RankCard:
         draw.text((950-w,130), exp,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
         bar_exp = (self.current_exp/self.max_exp)*619
-        if bar_exp <= 50:
-            bar_exp = 50  
+        if bar_exp <= 8:
+            bar_exp = 8  
 
         im = Image.new("RGBA", (620, 51))
         draw = ImageDraw.Draw(im, "RGBA")
