@@ -111,7 +111,7 @@ class RankCard:
         """
         Creates the rank card and returns `bytes`
         
-        ![card](https://cdn.discordapp.com/attachments/907213435358547968/1019966057294860328/final.png)
+        ![card](https://user-images.githubusercontent.com/77439837/234198272-3dcaabb0-0f38-4d51-9938-de4b0ad42123.png)
         """
         path = str(Path(__file__).parent)
 
@@ -179,7 +179,7 @@ class RankCard:
         """
         Creates the rank card and returns `bytes`
         
-        ![card](https://cdn.discordapp.com/attachments/907213435358547968/1020968412144480316/final.png)
+        ![card](https://user-images.githubusercontent.com/77439837/234198354-315e9420-9bd7-47bd-87ed-b21c3772646c.png)
         """
         path = str(Path(__file__).parent)
 
@@ -240,7 +240,7 @@ class RankCard:
         """
         Creates the rank card and returns `bytes`
         
-        ![card](https://cdn.discordapp.com/attachments/1018936393659076668/1022149875544113172/rank.png)
+        ![card](https://user-images.githubusercontent.com/77439837/234203410-a6a970ef-c01c-454b-be67-6dc7c1b2c807.png)
         """
         path = str(Path(__file__).parent)
 
@@ -290,7 +290,7 @@ class RankCard:
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,225))
         draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
-        background.paste(im, (330, 235))
+        background.paste(im, (330, 235), im.convert("RGBA"))
 
         image = BytesIO()
         background.save(image, 'PNG')
