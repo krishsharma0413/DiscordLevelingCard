@@ -163,7 +163,8 @@ class RankCard:
         im = Image.new("RGB", (490, 51), (0, 0, 0))
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 420, 50), 30, fill=(255,255,255,50))
-        draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        if self.current_exp != 0:
+            draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
         self.background.paste(im, (190, 235))
         new = Image.new("RGBA", self.background.size)
         new.paste(self.background,(0, 0), Image.open(path + "/assets/curvedoverlay.png").convert("L"))
@@ -228,7 +229,10 @@ class RankCard:
         im = Image.new("RGB", (620, 51), "#2f3136")
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,50))
-        draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        
+        if self.current_exp != 0:
+            draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        
         background.paste(im, (330, 235))
 
         image = BytesIO()
@@ -289,7 +293,9 @@ class RankCard:
         im = Image.new("RGBA", (620, 51))
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,225))
-        draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        if self.current_exp != 0:
+            draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        
         background.paste(im, (330, 235), im.convert("RGBA"))
 
         image = BytesIO()
