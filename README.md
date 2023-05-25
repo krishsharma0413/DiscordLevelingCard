@@ -203,4 +203,8 @@ RankCard.card3()
 </details>
 
 <br><br>
+
+if you want to see changelog then click [here](https://github.com/krishsharma0413/DiscordLevelingCard/blob/main/CHANGELOG.md)
+
+<br><br>
 please star the <a href="https://github.com/krishsharma0413/DiscordLevelingCard">repository</a> if you like it :D
