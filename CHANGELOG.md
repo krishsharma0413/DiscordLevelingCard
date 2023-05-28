@@ -7,3 +7,10 @@
 - Complete revomal of exp bar from the image if there is no exp i.e. `current_exp` is `0`. 
 
 <hr>
+
+## <a href="https://pypi.org/project/discordlevelingcard/0.5.2/">0.5.2</a>
+
+- Addition of resize attribute in `card1`, `card2` and `card3` functions.
+- README.md documentation updated.
+
+<hr>
