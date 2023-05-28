@@ -149,10 +149,16 @@ Settings(
 
 
 ```py
-RankCard.card1()
+RankCard.card1(resize: int = 100)
 ```
 
-`returns` - `bytes` which can directly be used within `discord.File` class.
+## attribute
+- `resize` : resize the final image. (default is 100, treat it as a percentage.)
+
+
+
+## returns 
+- `bytes` which can directly be used within `discord.File` class.
 
 
 
@@ -169,10 +175,14 @@ RankCard.card1()
 
 
 ```py
-RankCard.card2()
+RankCard.card2(resize: int = 100)
 ```
 
-`returns` - `bytes` which can directly be used within `discord.File` class.
+## attribute
+- `resize` : resize the final image. (default is 100, treat it as a percentage.)
+
+## returns
+- `bytes` which can directly be used within `discord.File` class.
 
 
 
@@ -189,10 +199,14 @@ RankCard.card2()
 
 
 ```py
-RankCard.card3()
+RankCard.card3(resize: int = 100)
 ```
 
-`returns` - `bytes` which can directly be used within `discord.File` class.
+## attribute
+- `resize` : resize the final image. (default is 100, treat it as a percentage.)
+
+## returns
+- `bytes` which can directly be used within `discord.File` class.
 
 
 
