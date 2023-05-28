@@ -107,7 +107,7 @@ class RankCard:
                 return Image.open(BytesIO(data))
 
 
-    async def card1(self)-> Union[None, bytes]:
+    async def card1(self, resize: int = 100)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
         
@@ -171,12 +171,14 @@ class RankCard:
         self.background = new.resize((505, 259))
 
         image = BytesIO()
+        if resize != 100:
+            self.background = self.background.resize((int(self.background.size[0]*(resize/100)), int(self.background.size[1]*(resize/100))))
         self.background.save(image, 'PNG')
         image.seek(0)
         return image
 
 
-    async def card2(self)-> Union[None, bytes]:
+    async def card2(self, resize: int = 100)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
         
@@ -236,11 +238,13 @@ class RankCard:
         background.paste(im, (330, 235))
 
         image = BytesIO()
+        if resize != 100:
+            background = background.resize((int(background.size[0]*(resize/100)), int(background.size[1]*(resize/100))))
         background.save(image, 'PNG')
         image.seek(0)
         return image
 
-    async def card3(self)-> Union[None, bytes]:
+    async def card3(self, resize: int = 100)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
         
@@ -299,6 +303,8 @@ class RankCard:
         background.paste(im, (330, 235), im.convert("RGBA"))
 
         image = BytesIO()
+        if resize != 100:
+            background = background.resize((int(background.size[0]*(resize/100)), int(background.size[1]*(resize/100))))
         background.save(image, 'PNG')
         image.seek(0)
         return image
