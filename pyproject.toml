@@ -17,7 +17,7 @@ keywords = [
 packages = [
     { include = "DiscordLevelingCard"}
 ]
-include = ["DiscordLevelingCard/assets/*"]
+include = ["DiscordLevelingCard/assets/*", "Examples/*"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4"
