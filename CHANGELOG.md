@@ -29,3 +29,9 @@
 - README.md fixing.
 
 <hr>
+
+## <a href="https://pypi.org/project/discordlevelingcard/0.5.5/">0.5.5</a>
+
+- README.md fixing.
+
+<hr>

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "discordlevelingcard"
-version = "0.5.4"
+version = "0.5.5"
 readme = "README.md"
 description = "A library with leveling cards for your discord bot."
 repository = "https://github.com/krishsharma0413/DiscordLevelingCard"

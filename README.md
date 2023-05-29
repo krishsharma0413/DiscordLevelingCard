@@ -115,7 +115,15 @@ RankCard(
 
 - `rank` - rank of the user. (optional)
 
+## methods
+
+- `card1`
+- `card2`
+- `card3`
+
 </details>
+
+<details>
 
 <summary> <span style="color:yellow">Sandbox</span> class</summary>
 
@@ -152,6 +160,9 @@ RankCard(
 
 - `cacheing` - if set to `True` then it will cache the image and will not regenerate it again. (default is `True`)
   
+
+## methods
+- `custom_card1`
   
 </details>
 
