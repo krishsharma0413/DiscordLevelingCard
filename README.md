@@ -1,9 +1,13 @@
 # DiscordLevelingCard
 A library with Rank cards for your discord bot.
 
+<h3 style="color:yellow;"> now create your own custom rank cards!</h3>
+
+<br>
+
 [![Downloads](https://pepy.tech/badge/discordlevelingcard)](https://pepy.tech/project/discordlevelingcard)
 
-## card preview
+# card preview
 
 `card1`
 
@@ -19,7 +23,7 @@ A library with Rank cards for your discord bot.
 
 <br>
 
-## installation
+# installation
 
 `for pypi version`
 ```sh
@@ -31,7 +35,7 @@ pip install discordlevelingcard
 pip install git+https://github.com/krishsharma0413/DiscordLevelingCard
 ```
 
-## How To Use
+# How To Use
 
 If you don't provide `path` then the method will return `bytes` which can directly be used in discord.py/disnake/pycord/nextcord 's `File class`.
 
@@ -39,7 +43,7 @@ If you don't provide `path` then the method will return `bytes` which can direct
 <br>
 
 
-## Example
+# Example
 
 `since no path was provided, it returns bytes which can directly be used in discord.py and its fork's File class.`
 
@@ -112,6 +116,45 @@ RankCard(
 - `rank` - rank of the user. (optional)
 
 </details>
+
+<summary> <span style="color:yellow">Sandbox</span> class</summary>
+
+<br>
+
+`__init__` method
+
+```py
+RankCard(
+    settings: Settings,
+    avatar:str,
+    level:int,
+    current_exp:int,
+    max_exp:int,
+    username:str,
+    cacheing:bool = True,
+    rank: Optional[int] = None
+)
+```
+
+- `settings` - Settings class from DiscordLevelingCard.
+
+- `avatar` - avatar image url.
+
+- `level` - level of the user.
+
+- `current_exp` - current exp of the user.
+
+- `max_exp` - max exp of the user.
+
+- `username` - username of the user.
+
+- `rank` - rank of the user. (optional)
+
+- `cacheing` - if set to `True` then it will cache the image and will not regenerate it again. (default is `True`)
+  
+  
+</details>
+
 
 <details>
 
