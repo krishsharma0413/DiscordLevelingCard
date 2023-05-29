@@ -73,7 +73,7 @@ class RankCard:
         username:str,
         current_exp:int,
         max_exp:int,
-        rank:Optional[int] = None,
+        rank:Optional[int] = None
     )-> None:
         self.background = settings.background
         self.background_color = settings.background_color
@@ -110,6 +110,15 @@ class RankCard:
     async def card1(self, resize: int = 100)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
+
+        Parameters
+        ----------
+        resize: :class:`int`
+            The percentage to resize the image to. Default is 100
+
+        Attributes
+        ----------
+        - `resize`
         
         ![card](https://user-images.githubusercontent.com/77439837/234198272-3dcaabb0-0f38-4d51-9938-de4b0ad42123.png)
         """
@@ -181,6 +190,15 @@ class RankCard:
     async def card2(self, resize: int = 100)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
+
+        Parameters
+        ----------
+        resize: :class:`int`
+            The percentage to resize the image to. Default is 100
+
+        Attributes
+        ----------
+        - `resize`
         
         ![card](https://user-images.githubusercontent.com/77439837/234198354-315e9420-9bd7-47bd-87ed-b21c3772646c.png)
         """
@@ -247,6 +265,15 @@ class RankCard:
     async def card3(self, resize: int = 100)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
+
+        Parameters
+        ----------
+        resize: :class:`int`
+            The percentage to resize the image to. Default is 100
+
+        Attributes
+        ----------
+        - `resize`
         
         ![card](https://user-images.githubusercontent.com/77439837/234203410-a6a970ef-c01c-454b-be67-6dc7c1b2c807.png)
         """
