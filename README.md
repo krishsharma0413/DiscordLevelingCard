@@ -261,6 +261,7 @@ RankCard.card3(resize: int = 100)
 
 </details>
 
+<details>
 
 <summary> <span style="color:yellow">custom_card1</span> method</summary>
 

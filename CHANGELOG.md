@@ -23,3 +23,9 @@
 - Addition of Examples folder.
 
 <hr>
+
+## <a href="https://pypi.org/project/discordlevelingcard/0.5.4/">0.5.4</a>
+
+- README.md fixing.
+
+<hr>
