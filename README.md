@@ -156,6 +156,8 @@ RankCard(
 </details>
 
 
+
+
 <details>
 
 <summary> <span style="color:yellow">Settings</span> class</summary>
@@ -258,6 +260,36 @@ RankCard.card3(resize: int = 100)
 <br>
 
 </details>
+
+
+<summary> <span style="color:yellow">custom_card1</span> method</summary>
+
+
+```py
+Sandbox.custom_card1(card_colour:str = "black", resize: int = 100)
+```
+
+## attribute
+- `resize` : resize the final image. (default is 100, treat it as a percentage.)
+- `card_colour` : color of the card. (default is black)
+
+
+
+## returns 
+- `bytes` which can directly be used within `discord.File` class.
+
+
+## examples
+![custom_card1](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/blue_card1.png)
+
+![custom_card1](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/white_card1.png)
+
+![custom_card1](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/black_card1.png)
+
+<br>
+
+</details>
+
 
 <br><br>
 

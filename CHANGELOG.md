@@ -8,7 +8,7 @@
 
 <hr>
 
-## <a href="https://pypi.org/project/discordlevelingcard/0.5.2/">0.5.2</a>
+## 0.5.2
 
 - Addition of resize attribute in `card1`, `card2` and `card3` functions.
 - README.md documentation updated.
