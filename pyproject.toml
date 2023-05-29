@@ -12,7 +12,8 @@ keywords = [
     "nextcord", "rank", "ranking",
     "level", "discord-bot", "bot",
     "discord-leveling", "level-card",
-    "discord-leveling-card", "discord-rank-card"
+    "discord-leveling-card", "discord-rank-card",
+    "sandbox", "custom", "custom-card"
 ]
 packages = [
     { include = "DiscordLevelingCard"}
