@@ -212,4 +212,172 @@ class Sandbox:
         return image
 
 
+    async def custom_card3(
+            self,
+            resize:int = 100,
 
+            senstivity:int = 200,
+            card_colour: str = "black",
+
+            border_width: int = 25,
+            border_height: int = 25,
+            
+            avatar_frame: str = "curvedborder",
+            avatar_size: int = 260,
+            avatar_position: tuple = (53, 36),
+            
+            text_font: str = "levelfont.otf",
+
+            username_position: tuple = (330,130),
+            username_font_size: int = 50,
+
+            level_position: tuple = (500,40),
+            level_font_size: int = 50,
+
+            exp_position: tuple = (775,130),
+            exp_font_size: int = 50,
+        )-> Union[None, bytes]:
+        """
+        Sandbox for third type of card which returns "BytesIO"
+
+        Parameters
+        ----------
+        resize: :class:`int`
+            The percentage to resize the image to. Default is 100
+        
+        senstivity: :class:`int`
+            Change the transparency of the black box over the background image.
+                Default is 200.range - [0,255] 
+
+        border_width: :class:`int`
+            width of the border. default is 25
+
+        border_height: :class:`int`
+            height of the border. default is 25
+            
+        avatar_frame: :class:`str`
+            `circle` `square` `curvedborder` `hexagon` or path to a self created mask.
+        
+        card_colour: :class:`str`
+            colour of the translucent overlay. Default is black.
+
+        text_font: :class:`str`
+            Default is `levelfont.otf` or path to a custom otf or ttf file type font.
+
+        avatar_size: :class:`int`
+            size of the avatar. Default is 260.
+
+        avatar_position: :class:`tuple`
+            pixel position of the avatar to be placed at. Default is (53, 36)
+
+        username_position: :class:`tuple`
+            pixel position of the username to be placed at. Default is (330,130)
+        
+        username_font_size: :class:`int`
+            font size of the username. Default is 50.
+        
+        level_position: :class:`tuple`
+            pixel position of the level to be placed at. Default is (500,40)
+        
+        level_font_size: :class:`int`
+            font size of the level. Default is 50.
+
+        exp_position: :class:`tuple`
+            pixel position of the exp to be placed at. Default is (775,130)
+        
+        exp_font_size: :class:`int`
+            font size of the exp. Default is 50.
+        
+        Attributes
+        ----------
+        - `resize`
+        - `senstivity`
+        - `border_width`
+        - `border_height`
+        - `avatar_frame`
+        - `card_colour`
+        - `text_font`
+        - `avatar_size`
+        - `avatar_position`
+        - `username_position`
+        - `username_font_size`
+        - `level_position`
+        - `level_font_size`
+        - `exp_position`
+        - `exp_font_size`
+        
+        """
+        path = str(Path(__file__).parent)
+
+        if isinstance(self.avatar, str):
+            if self.avatar.startswith("http"):
+                self.avatar = await Sandbox._image(self.avatar)
+        elif isinstance(self.avatar, Image.Image):
+            pass
+        else:
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
+
+        background = self.background.resize((1000, 333))
+        cut = Image.new("RGBA", (1000-(border_width*2), 333-(border_height*2)) , ImageColor.getcolor(card_colour, "RGB")+(senstivity,))
+        background.paste(cut, (border_width, border_height) ,cut)
+
+        avatar = self.avatar.resize((avatar_size, avatar_size))
+
+        if avatar_frame == "square":
+            mask = Image.new("RGBA", (avatar_size, avatar_size), "white")
+        elif avatar_frame == "circle":
+            mask = Image.open(path + "/assets/mask_circle.jpg").resize((avatar_size, avatar_size))
+        elif avatar_frame == "hexagon":
+            mask = Image.open(path + "/assets/mask_hexagon.png").resize((avatar_size, avatar_size))
+        else:
+            try:
+                mask = Image.open(avatar_frame).resize((avatar_size, avatar_size))
+            except:
+                mask = Image.open(path + "/assets/curveborder.png").resize((avatar_size, avatar_size))
+
+        new = Image.new("RGBA", avatar.size, (0, 0, 0))
+        try:
+            new.paste(avatar, mask=avatar.convert("RGBA").split()[3])
+        except:
+            new.paste(avatar, (0,0))
+        
+        background.paste(new, avatar_position, mask.convert("L"))
+
+        if text_font == "levelfont.otf":
+            fontname = path + "/assets/levelfont.otf"
+        else:
+            try:
+                fontname = text_font
+            except:
+                fontname = path + "/assets/levelfont.otf"
+
+        draw = ImageDraw.Draw(background)
+
+        if self.rank is not None:
+            combined = "LEVEL: " + self._convert_number(self.level) + "       " + "RANK: " + str(self.rank)
+        else:
+            combined = "LEVEL: " + self._convert_number(self.level)
+        draw.text(level_position, combined,font=ImageFont.truetype(fontname,level_font_size), fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        draw.text(username_position, self.username,font=ImageFont.truetype(fontname,username_font_size), fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+
+        exp = f"{self._convert_number(self.current_exp)}/{self._convert_number(self.max_exp)}"
+        draw.text(exp_position, exp,font=ImageFont.truetype(fontname,exp_font_size), fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+
+        bar_exp = (self.current_exp/self.max_exp)*619
+        if bar_exp <= 50:
+            bar_exp = 50  
+
+        im = Image.new("RGBA", (620, 51))
+        draw = ImageDraw.Draw(im, "RGBA")
+        draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,225))
+        if self.current_exp != 0:
+            draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
+        
+        background.paste(im, (330, 235), im.convert("RGBA"))
+
+        image = BytesIO()
+        if resize != 100:
+            background = background.resize((int(background.size[0]*(resize/100)), int(background.size[1]*(resize/100))))
+        background.save(image, 'PNG')
+        image.seek(0)
+        return image
