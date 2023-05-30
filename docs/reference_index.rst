@@ -1,2 +1,0 @@
-.. automodule:: DiscordLevelingCard
-     :members:
