@@ -302,6 +302,70 @@ Sandbox.custom_card1(card_colour:str = "black", resize: int = 100)
 
 </details>
 
+<details>
+
+<summary> <span style="color:yellow">custom_card3</span> method</summary>
+
+
+```py
+Sandbox.custom_card3(
+    resize:int = 100,
+
+    senstivity:int = 200,
+    card_colour: str = "black",
+
+    border_width: int = 25,
+    border_height: int = 25,
+    
+    avatar_frame: str = "curvedborder",
+    avatar_size: int = 260,
+    avatar_position: tuple = (53, 36),
+    
+    text_font: str = "levelfont.otf",
+
+    username_position: tuple = (330,130),
+    username_font_size: int = 50,
+
+    level_position: tuple = (500,40),
+    level_font_size: int = 50,
+
+    exp_position: tuple = (775,130),
+    exp_font_size: int = 50,
+
+)
+```
+
+## attribute
+- `resize` : resize the final image. (default is 100, treat it as a percentage.)
+- `senstivity` : senstivity of the avatar frame. (default is 200)
+- `card_colour` : color of the card. (default is black)
+- `border_width` : width of the border. (default is 25)
+- `border_height` : height of the border. (default is 25)
+- `avatar_frame` : avatar frame. (default is "curvedborder")
+- `avatar_size` : size of the avatar. (default is 260)
+- `avatar_position` : position of the avatar. (default is (53, 36))
+- `text_font` : font of the text. (default is "levelfont.otf")
+- `username_position` : position of the username. (default is (330,130))
+- `username_font_size` : font size of the username. (default is 50)
+- `level_position` : position of the level. (default is (500,40))
+- `level_font_size` : font size of the level. (default is 50)
+- `exp_position` : position of the exp. (default is (775,130))
+- `exp_font_size` : font size of the exp. (default is 50)
+
+## returns 
+- `bytes` which can directly be used within `discord.File` class.
+
+
+## examples
+
+![custom_card3](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/custom%20card3%20example-1.png)
+
+![custom_card3](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/custom%20card3%20unholy%20example-2.png)
+
+<br>
+
+</details>
+
 
 <br><br>
 
