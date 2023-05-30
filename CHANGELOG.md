@@ -35,3 +35,12 @@
 - README.md fixing.
 
 <hr>
+
+## <a href="https://pypi.org/project/discordlevelingcard/0.5.6/">0.5.6</a>
+
+- Addition of Sandbox mode for `card3`.
+- Readme.md documentation updated.
+- Addition of `test_sandbox_card3` in Tester class to test sandbox.
+- Addition of more examples in Examples Folder. 
+
+<hr>
