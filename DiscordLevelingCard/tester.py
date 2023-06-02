@@ -1,10 +1,6 @@
-from io import BytesIO
-from typing import Optional, Union
+from typing import Optional, Union, List
 
-from aiohttp import ClientSession
-from PIL import Image, ImageDraw, ImageFont
-from .error import InvalidImageUrl
-from pathlib import Path
+from PIL import Image
 from .card_settings import Settings
 from . import RankCard, Sandbox
 
@@ -229,15 +225,17 @@ class Tester:
         Image.open(card).save(f"{self.path}.png", "PNG")
         return
     
-    async def test_sandbox_card3(
+    async def test_sandbox_custom_canvas(
             self,
+
+            has_background: bool = True,
+            background_colour: str = "black",
+
+            canvas_size: tuple = (1000, 333),
+
             resize:int = 100,
 
-            senstivity:int = 200,
-            card_colour: str = "black",
-
-            border_width: int = 25,
-            border_height: int = 25,
+            overlay: Union[None, List] = [[(1000-50, 333-50),(25, 25), "black", 200]],
             
             avatar_frame: str = "curvedborder",
             avatar_size: int = 260,
@@ -252,32 +250,39 @@ class Tester:
             level_font_size: int = 50,
 
             exp_position: tuple = (775,130),
-            exp_font_size: int = 50
+            exp_font_size: int = 50,
+            bar_exp: Union[None, int] = None,
+
+            exp_bar_width: int = 619,
+            exp_bar_height: int = 50,
+            exp_bar_background_colour: Union[str, tuple] = "white",
+            exp_bar_position:tuple = (330, 235),
+            exp_bar_curve: int = 30,
+            extra_text: Union[List, None] = None
 
         )->None:
         """test card3 of Sandbox with this method
 
         Parameters
         ----------
+        has_background: :class:`bool`
+            Whether to use a background image or not. Default is True
+        
+        background_colour: :class:`str`
+            The colour of the background, only used if has_background is set to False. Default is black.
+        
+        canvas_size: :class:`tuple`
+            The size of the canvas. Default is (1000, 333)
+        
         resize: :class:`int`
             The percentage to resize the image to. Default is 100
-        
-        senstivity: :class:`int`
-            Change the transparency of the black box over the background image.
-                Default is 200.range - [0,255] 
-
-        border_width: :class:`int`
-            width of the border. default is 25
-
-        border_height: :class:`int`
-            height of the border. default is 25
+                    
+        overlay: :class:`list`
+            A list of overlays to be placed on the background. Default is [[(1000-50, 333-50),(25, 25), "black", 200]].
 
         avatar_frame: :class:`str`
             `circle` `square` `curvedborder` `hexagon` or path to a self created mask.
         
-        card_colour: :class:`str`
-            colour of the translucent overlay. Default is black.
-
         text_font: :class:`str`
             Default is `levelfont.otf` or path to a custom otf or ttf file type font.
 
@@ -304,15 +309,37 @@ class Tester:
         
         exp_font_size: :class:`int`
             font size of the exp. Default is 50.
+
+        exp_bar_width: :class:`int`
+            width of the exp bar. Default is 619.
         
+        exp_bar_height: :class:`int`
+            height of the exp bar. Default is 50.
+        
+        exp_bar_background_colour: :class:`str`
+            colour of the exp bar. Default is white.
+        
+        exp_bar_position: :class:`tuple`
+            pixel position of the exp bar to be placed at. Default is (330, 235)
+        
+        exp_bar_curve: :class:`int`
+            curve of the exp bar. Default is 30.
+
+        extra_text: :class:`list`
+            list of tuples containing text and position of the text to be placed on the card. Default is None. eg ["string", (x-position, y-position), font-size, "colour"]
+
+        exp_bar: :class:`int`
+            The calculated exp of the user. Default is None.
+        
+
         Attributes
         ----------
+        - `has_background`
+        - `background_colour`
+        - `canvas_size`
         - `resize`
-        - `senstivity`
-        - `border_width`
-        - `border_height`
+        - `overlay`
         - `avatar_frame`
-        - `card_colour`
         - `text_font`
         - `avatar_size`
         - `avatar_position`
@@ -322,6 +349,13 @@ class Tester:
         - `level_font_size`
         - `exp_position`
         - `exp_font_size`
+        - `exp_bar_width`
+        - `exp_bar_height`
+        - `exp_bar_background_colour`
+        - `exp_bar_position`
+        - `exp_bar_curve`
+        - `extra_text`
+        - `exp_bar`
         
         Returns
         -------
@@ -338,12 +372,12 @@ class Tester:
             rank=self.rank,
             cacheing=self.cacheing
         )
-        card = await card.custom_card3(
+        card = await card.custom_canvas(
+            has_background=has_background,
+            background_colour=background_colour,
+            canvas_size=canvas_size,
             resize=resize,
-            card_colour=card_colour,
-            senstivity=senstivity,
-            border_width=border_width,
-            border_height=border_height,
+            overlay=overlay,
             avatar_frame=avatar_frame,
             avatar_size=avatar_size,
             avatar_position=avatar_position,
@@ -353,7 +387,15 @@ class Tester:
             level_position=level_position,
             level_font_size=level_font_size,
             exp_position=exp_position,
-            exp_font_size=exp_font_size        
+            exp_font_size=exp_font_size,
+            exp_bar_width=exp_bar_width,
+            exp_bar_height=exp_bar_height,
+            exp_bar_background_colour=exp_bar_background_colour,
+            exp_bar_position=exp_bar_position,
+            exp_bar_curve=exp_bar_curve,
+            extra_text=extra_text,
+            exp_bar=bar_exp
+            
         )
         Image.open(card).save(f"{self.path}.png", "PNG")
         return

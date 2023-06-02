@@ -44,3 +44,12 @@
 - Addition of more examples in Examples Folder. 
 
 <hr>
+
+## <a href="https://pypi.org/project/discordlevelingcard/0.6.0/">0.6.0</a>
+
+- Custom Canvas in Sandbox mode.
+- README.md documentation updated.
+- Addition of `test_sandbox_custom_canvas` in Tester class to test sandbox.
+- Addition of more examples in Examples Folder.
+  
+<hr>

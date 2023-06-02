@@ -304,11 +304,11 @@ Sandbox.custom_card1(card_colour:str = "black", resize: int = 100)
 
 <details>
 
-<summary> <span style="color:yellow">custom_card3</span> method</summary>
+<summary> <span style="color:yellow">custom_canvas</span> method</summary>
 
 
 ```py
-Sandbox.custom_card3(
+Sandbox.custom_canvas(
     resize:int = 100,
 
     senstivity:int = 200,
@@ -336,21 +336,29 @@ Sandbox.custom_card3(
 ```
 
 ## attribute
-- `resize` : resize the final image. (default is 100, treat it as a percentage.)
-- `senstivity` : senstivity of the avatar frame. (default is 200)
-- `card_colour` : color of the card. (default is black)
-- `border_width` : width of the border. (default is 25)
-- `border_height` : height of the border. (default is 25)
-- `avatar_frame` : avatar frame. (default is "curvedborder")
-- `avatar_size` : size of the avatar. (default is 260)
-- `avatar_position` : position of the avatar. (default is (53, 36))
-- `text_font` : font of the text. (default is "levelfont.otf")
-- `username_position` : position of the username. (default is (330,130))
-- `username_font_size` : font size of the username. (default is 50)
-- `level_position` : position of the level. (default is (500,40))
-- `level_font_size` : font size of the level. (default is 50)
-- `exp_position` : position of the exp. (default is (775,130))
-- `exp_font_size` : font size of the exp. (default is 50)
+  - `has_background` : if set to `True` then it will add a background to the image. (default is `True`)
+  - `background_colour` : color of the background. (default is `black`)
+  - `canvas_size` : size of the canvas. (default is `(1000, 333)`)
+  - `resize` : resize the final image. (default is 100, treat it as a percentage.)
+  - `overlay` : A list of overlays to be placed on the background. (Default is `[[(1000-50, 333-50),(25, 25), "black", 200]]`.)
+  - `avatar_frame` : `circle` `square` `curvedborder` `hexagon` or path to a self created mask. (Default is `curvedborder`.)
+  - `text_font` : Default is `levelfont.otf` or path to a custom otf or ttf file type font.
+  - `avatar_size` : size of the avatar. (default is `260`)
+  - `avatar_position` : position of the avatar. (default is `(53, 36)`)
+  - `username_position` : position of the username. (default is `(330,130)`)
+  - `username_font_size` : font size of the username. (default is `50`)
+  - `level_position` : position of the level. (default is `(500,40)`)
+  - `level_font_size` : font size of the level. (default is `50`)
+  - `exp_position` : position of the exp. (default is `(775,130)`)
+  - `exp_font_size` : font size of the exp. (default is `50`)
+  - `exp_bar_width` : width of the exp bar. (default is `619`)
+  - `exp_bar_height` : height of the exp bar. (default is `50`)
+  - `exp_bar_background_colour` : color of the exp bar background. (default is `white`)
+  - `exp_bar_position` : position of the exp bar. (default is `(330, 235)`)
+  - `exp_bar_curve` : curve of the exp bar. (default is `30`)
+  - `extra_text` : A list of extra text to be placed on the image. (Default is `None`.)
+  - `exp_bar` : The calculated exp of the user. (Default is `None`.)
+
 
 ## returns 
 - `bytes` which can directly be used within `discord.File` class.
@@ -358,9 +366,68 @@ Sandbox.custom_card3(
 
 ## examples
 
-![custom_card3](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/custom%20card3%20example-1.png)
+![custom_canvas](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/custom%20card3%20example-1.png)
 
-![custom_card3](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/custom%20card3%20unholy%20example-2.png)
+![custom_canvas](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/custom%20card3%20unholy%20example-2.png)
+
+
+An Example that i really loved was this one, here is the code for it as well. (you might have to tweak a lot to make it work for you though. )
+
+```py
+from DiscordLevelingCard import Sandbox, Settings
+import asyncio
+from PIL import Image
+
+setting = Settings(
+    background="./bg.jpg",
+    bar_color="green",
+    text_color="white")
+
+async def main():
+    rank = Sandbox(
+        username="krishsharma0413",
+        level=1,
+        current_exp=10,
+        max_exp=400,
+        settings=setting,
+        avatar=Image.open("./avatarimg.png")
+    )
+    result = await rank.custom_canvas(
+        avatar_frame="square",
+        avatar_size=233,
+        avatar_position=(50, 50),
+        exp_bar_background_colour = "black",
+        exp_bar_height=50,
+        exp_bar_width=560,
+        exp_bar_curve=0,
+        exp_bar_position=(70, 400),
+        username_position=(320, 50),
+        level_position=(320, 225),
+        exp_position=(70, 330),
+        canvas_size=(700, 500),
+
+        overlay=[[(350, 233),(300, 50), "white", 100],
+                 [(600, 170),(50, 300), "white", 100]],
+
+        extra_text=[
+            ["bio-", (320, 110), 25, "white"],
+            ["this can very well be a bio", (320, 140), 25, "white"],
+            ["even mutiple lines!", (320, 170), 25, "white"],
+            ["if we remove bio- even more!", (320, 200), 25, "white"],
+            ]
+
+    )
+    
+    # you don't need this line if you are using this in discord.py
+    Image.open(result).save("result.png", "PNG")
+
+
+asyncio.run(main())
+```
+
+and this is how it looks :D
+
+![custom_canvas](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/extra%20canvas%20example.png)
 
 <br>
 

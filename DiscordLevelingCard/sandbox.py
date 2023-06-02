@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont, ImageColor
@@ -51,6 +51,8 @@ class Sandbox:
     -------
     - `custom_card1`
         Creates a rank card with the first design
+    -  `custom_canvas`
+        A blank canvas to make whatever you want!
 
     Raises
     ------
@@ -212,15 +214,17 @@ class Sandbox:
         return image
 
 
-    async def custom_card3(
+    async def custom_canvas(
             self,
+
+            has_background: bool = True,
+            background_colour: str = "black",
+
+            canvas_size: tuple = (1000, 333),
+
             resize:int = 100,
 
-            senstivity:int = 200,
-            card_colour: str = "black",
-
-            border_width: int = 25,
-            border_height: int = 25,
+            overlay: Union[None, List] = [[(1000-50, 333-50),(25, 25), "black", 200]],
             
             avatar_frame: str = "curvedborder",
             avatar_size: int = 260,
@@ -236,31 +240,40 @@ class Sandbox:
 
             exp_position: tuple = (775,130),
             exp_font_size: int = 50,
+            bar_exp: Union[None, int] = None,
+
+            exp_bar_width: int = 619,
+            exp_bar_height: int = 50,
+            exp_bar_background_colour: Union[str, tuple] = "white",
+            exp_bar_position:tuple = (330, 235),
+            exp_bar_curve: int = 30,
+            extra_text: Union[List, None] = None
+
+
         )-> Union[None, bytes]:
         """
         Sandbox for third type of card which returns "BytesIO"
 
         Parameters
         ----------
+        has_background: :class:`bool`
+            Whether to use a background image or not. Default is True
+        
+        background_colour: :class:`str`
+            The colour of the background, only used if has_background is set to False. Default is black.
+        
+        canvas_size: :class:`tuple`
+            The size of the canvas. Default is (1000, 333)
+        
         resize: :class:`int`
             The percentage to resize the image to. Default is 100
-        
-        senstivity: :class:`int`
-            Change the transparency of the black box over the background image.
-                Default is 200.range - [0,255] 
+                    
+        overlay: :class:`list`
+            A list of overlays to be placed on the background. Default is [[(1000-50, 333-50),(25, 25), "black", 200]].
 
-        border_width: :class:`int`
-            width of the border. default is 25
-
-        border_height: :class:`int`
-            height of the border. default is 25
-            
         avatar_frame: :class:`str`
             `circle` `square` `curvedborder` `hexagon` or path to a self created mask.
         
-        card_colour: :class:`str`
-            colour of the translucent overlay. Default is black.
-
         text_font: :class:`str`
             Default is `levelfont.otf` or path to a custom otf or ttf file type font.
 
@@ -287,15 +300,37 @@ class Sandbox:
         
         exp_font_size: :class:`int`
             font size of the exp. Default is 50.
+
+        exp_bar_width: :class:`int`
+            width of the exp bar. Default is 619.
         
+        exp_bar_height: :class:`int`
+            height of the exp bar. Default is 50.
+        
+        exp_bar_background_colour: :class:`str`
+            colour of the exp bar. Default is white.
+        
+        exp_bar_position: :class:`tuple`
+            pixel position of the exp bar to be placed at. Default is (330, 235)
+        
+        exp_bar_curve: :class:`int`
+            curve of the exp bar. Default is 30.
+
+        extra_text: :class:`list`
+            list of tuples containing text and position of the text to be placed on the card. Default is None. eg ["string", (x-position, y-position), font-size, "colour"]
+
+        exp_bar: :class:`int`
+            The calculated exp of the user. Default is None.
+        
+
         Attributes
         ----------
+        - `has_background`
+        - `background_colour`
+        - `canvas_size`
         - `resize`
-        - `senstivity`
-        - `border_width`
-        - `border_height`
+        - `overlay`
         - `avatar_frame`
-        - `card_colour`
         - `text_font`
         - `avatar_size`
         - `avatar_position`
@@ -305,6 +340,13 @@ class Sandbox:
         - `level_font_size`
         - `exp_position`
         - `exp_font_size`
+        - `exp_bar_width`
+        - `exp_bar_height`
+        - `exp_bar_background_colour`
+        - `exp_bar_position`
+        - `exp_bar_curve`
+        - `extra_text`
+        - `exp_bar`
         
         """
         path = str(Path(__file__).parent)
@@ -317,9 +359,14 @@ class Sandbox:
         else:
             raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
-        background = self.background.resize((1000, 333))
-        cut = Image.new("RGBA", (1000-(border_width*2), 333-(border_height*2)) , ImageColor.getcolor(card_colour, "RGB")+(senstivity,))
-        background.paste(cut, (border_width, border_height) ,cut)
+        if has_background:
+            background = self.background.resize(canvas_size)
+        else:
+            background = Image.new("RGBA", canvas_size, ImageColor.getcolor(background_colour, "RGB"))
+        if overlay is not None:
+            for x in overlay:
+                cut = Image.new("RGBA", x[0] , ImageColor.getcolor(x[2], "RGB")+(x[3],))
+                background.paste(cut, x[1] ,cut)
 
         avatar = self.avatar.resize((avatar_size, avatar_size))
 
@@ -360,20 +407,30 @@ class Sandbox:
         draw.text(level_position, combined,font=ImageFont.truetype(fontname,level_font_size), fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
         draw.text(username_position, self.username,font=ImageFont.truetype(fontname,username_font_size), fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
+        if extra_text is not None and type(extra_text) == list:
+            for x in extra_text:
+                draw.text(x[1], x[0],font=ImageFont.truetype(fontname,x[2]), fill=(ImageColor.getcolor(x[3], "RGBA") if type(x[3]) != tuple else extra_text),stroke_width=1,stroke_fill=(0, 0, 0))
+
         exp = f"{self._convert_number(self.current_exp)}/{self._convert_number(self.max_exp)}"
         draw.text(exp_position, exp,font=ImageFont.truetype(fontname,exp_font_size), fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        bar_exp = (self.current_exp/self.max_exp)*619
-        if bar_exp <= 50:
-            bar_exp = 50  
+        if bar_exp == None:
+            bar_exp = (self.current_exp/self.max_exp)*exp_bar_width
+            exp_bar_curve_custom = exp_bar_curve
+        else:
+            bar_exp = bar_exp*exp_bar_width
 
-        im = Image.new("RGBA", (620, 51))
+        if bar_exp <= 50:
+            bar_exp = 50
+            exp_bar_curve_custom = exp_bar_curve//2
+
+        im = Image.new("RGBA", (exp_bar_width+1, exp_bar_height+1))
         draw = ImageDraw.Draw(im, "RGBA")
-        draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,225))
+        draw.rounded_rectangle((0, 0, exp_bar_width, exp_bar_height), exp_bar_curve, fill=(exp_bar_background_colour if type(exp_bar_background_colour) == tuple else ImageColor.getcolor(exp_bar_background_colour, "RGBA")))
         if self.current_exp != 0:
-            draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
-        
-        background.paste(im, (330, 235), im.convert("RGBA"))
+            draw.rounded_rectangle((0, 0, bar_exp, exp_bar_height), exp_bar_curve_custom, fill=self.bar_color)
+
+        background.paste(im, exp_bar_position, im.convert("RGBA"))
 
         image = BytesIO()
         if resize != 100:
