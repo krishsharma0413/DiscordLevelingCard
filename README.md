@@ -21,6 +21,10 @@ A library with Rank cards for your discord bot.
 `card3` *same as card2 but with background*
 ![card3](https://user-images.githubusercontent.com/77439837/234203410-a6a970ef-c01c-454b-be67-6dc7c1b2c807.png)
 
+`card4` design from Ogiroid bot
+
+![card4](https://github.com/LevaniVashadze/DiscordLevelingCard/assets/100613979/2519970e-5621-4e05-aca3-75062d8cd49d)
+
 <br>
 
 # installation
@@ -287,9 +291,7 @@ RankCard.card4(resize: int = 100)
 ## returns
 - `bytes` which can directly be used within `discord.File` class.
 
-
-
-![card4]()
+![card4](https://github.com/LevaniVashadze/DiscordLevelingCard/assets/100613979/2519970e-5621-4e05-aca3-75062d8cd49d)
 
 <br>
 
