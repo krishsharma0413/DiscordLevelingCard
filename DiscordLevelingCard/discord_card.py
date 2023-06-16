@@ -349,7 +349,7 @@ class RankCard:
         ----------
         - `resize`
 
-        ![card]()
+        ![card4](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/card4_example.png)
         """
         path = str(Path(__file__).parent)
 
@@ -428,6 +428,10 @@ class RankCard:
 
                 out = Image.alpha_composite(base, txt)
                 out = roundify(out, rad=14)
+
+                if resize != 100:
+                    out = out.resize(
+                        (int(out.size[0] * (resize / 100)), int(out.size[1] * (resize / 100))))
 
                 image = BytesIO()
                 out.save(image, 'PNG')
