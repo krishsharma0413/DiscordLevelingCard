@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import Optional, Union
 
 from aiohttp import ClientSession
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from .error import InvalidImageUrl
 from pathlib import Path
 from .card_settings import Settings
@@ -130,7 +130,7 @@ class RankCard:
         elif isinstance(self.avatar, Image.Image):
             pass
         else:
-            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}")
 
         self.avatar = self.avatar.resize((170,170))
 
@@ -138,7 +138,7 @@ class RankCard:
         background = Image.new("RGBA", overlay.size)
         backgroundover = self.background.resize((638,159))
         background.paste(backgroundover,(0,0))
-        
+
         self.background = background.resize(overlay.size)
         self.background.paste(overlay,(0,0),overlay)
 
@@ -148,12 +148,12 @@ class RankCard:
         draw.text((205,(327/2)+20), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
         bar_exp = (self.current_exp/self.max_exp)*420
         if bar_exp <= 50:
-            bar_exp = 50    
+            bar_exp = 50
 
         current_exp = RankCard._convert_number(self.current_exp)
-        
+
         max_exp = RankCard._convert_number(self.max_exp)
-        
+
         myFont = ImageFont.truetype(path + "/assets/levelfont.otf",30)
         draw.text((197,(327/2)+125), f"LEVEL - {RankCard._convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
@@ -210,7 +210,7 @@ class RankCard:
         elif isinstance(self.avatar, Image.Image):
             pass
         else:
-            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}")
 
         background = Image.new("RGB", (1000, 333), self.background_color)
         background.paste(Image.new("RGB", (950, 333-50), "#2f3136"), (25, 25) )
@@ -224,7 +224,7 @@ class RankCard:
             new.paste(avatar, mask=avatar.convert("RGBA").split()[3])
         except:
             new.paste(avatar, (0,0))
-        
+
         background.paste(new, (53, 73//2), mask.convert("L"))
 
         myFont = ImageFont.truetype(path + "/assets/levelfont.otf",50)
@@ -244,15 +244,15 @@ class RankCard:
 
         bar_exp = (self.current_exp/self.max_exp)*619
         if bar_exp <= 50:
-            bar_exp = 50  
+            bar_exp = 50
 
         im = Image.new("RGB", (620, 51), "#2f3136")
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,50))
-        
+
         if self.current_exp != 0:
             draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
-        
+
         background.paste(im, (330, 235))
 
         image = BytesIO()
@@ -285,7 +285,7 @@ class RankCard:
         elif isinstance(self.avatar, Image.Image):
             pass
         else:
-            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}")
 
         background = self.background.resize((1000, 333))
         cut = Image.new("RGBA", (950, 333-50) , (0, 0, 0, 200))
@@ -300,7 +300,7 @@ class RankCard:
             new.paste(avatar, mask=avatar.convert("RGBA").split()[3])
         except:
             new.paste(avatar, (0,0))
-        
+
         background.paste(new, (53, 73//2), mask.convert("L"))
         myFont = ImageFont.truetype(path + "/assets/levelfont.otf",50)
         draw = ImageDraw.Draw(background)
@@ -319,14 +319,14 @@ class RankCard:
 
         bar_exp = (self.current_exp/self.max_exp)*619
         if bar_exp <= 50:
-            bar_exp = 50  
+            bar_exp = 50
 
         im = Image.new("RGBA", (620, 51))
         draw = ImageDraw.Draw(im, "RGBA")
         draw.rounded_rectangle((0, 0, 619, 50), 30, fill=(255,255,255,225))
         if self.current_exp != 0:
             draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
-        
+
         background.paste(im, (330, 235), im.convert("RGBA"))
 
         image = BytesIO()
@@ -335,3 +335,101 @@ class RankCard:
         background.save(image, 'PNG')
         image.seek(0)
         return image
+
+    async def card4(self, resize: int = 100)-> Union[None, bytes]:
+        """
+        Creates the rank card and returns `bytes`
+
+        Parameters
+        ----------
+        resize: :class:`int`
+            The percentage to resize the image to. Default is 100
+
+        Attributes
+        ----------
+        - `resize`
+
+        ![card]()
+        """
+        path = str(Path(__file__).parent)
+
+        if isinstance(self.avatar, str):
+            if self.avatar.startswith("http"):
+                self.avatar = await RankCard._image(self.avatar)
+        elif isinstance(self.avatar, Image.Image):
+            pass
+        else:
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}")
+
+
+        with Image.open(path + "/assets/card4.png").convert(
+                    "RGBA"
+            ) as base:  # WINTER VERSION
+                # make a blank image for the text, initialized to transparent text color
+                txt = Image.new("RGBA", base.size, (255, 255, 255, 0))
+
+                self.avatar = self.avatar.convert("RGBA")
+
+                def mask_circle_transparent(pil_img, blur_radius, offset=0):
+                    """Make Image round(CTRL + C, CTRL + V ftw). https://note.nkmk.me/en/python-pillow-square-circle-thumbnail/"""
+                    offset = blur_radius * 2 + offset
+                    mask = Image.new("L", pil_img.size, 0)
+                    draw = ImageDraw.Draw(mask)
+                    draw.ellipse(
+                        (
+                            offset,
+                            offset,
+                            pil_img.size[0] - offset,
+                            pil_img.size[1] - offset,
+                        ),
+                        fill=255,
+                    )
+                    mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
+
+                    result = pil_img.copy()
+                    result.putalpha(mask)
+
+                    return result
+
+                def roundify(im, rad):
+                    circle = Image.new("L", (rad * 2, rad * 2), 0)
+                    draw = ImageDraw.Draw(circle)
+                    draw.ellipse((0, 0, rad * 2, rad * 2), fill=255)
+                    alpha = Image.new("L", im.size, 255)
+                    w, h = im.size
+                    alpha.paste(circle.crop((0, 0, rad, rad)), (0, 0))
+                    alpha.paste(circle.crop((0, rad, rad, rad * 2)), (0, h - rad))
+                    alpha.paste(circle.crop((rad, 0, rad * 2, rad)), (w - rad, 0))
+                    alpha.paste(
+                        circle.crop((rad, rad, rad * 2, rad * 2)), (w - rad, h - rad)
+                    )
+                    im.putalpha(alpha)
+                    return im
+
+                # makes the avatar ROUND
+                self.avatar = mask_circle_transparent(
+                    self.avatar.resize((189, 189)), blur_radius=1, offset=0
+                )
+
+                width = abs(round((self.current_exp / self.max_exp) * 418, 2))
+                fnt = ImageFont.truetype(path + "/assets/opensans-semibold.ttf", 24)
+                # get a drawing context
+                d = ImageDraw.Draw(txt)
+                # username
+                d.text((179, 32), str(self.username), font=fnt, fill=(0, 0, 0, 255))
+                # xp
+                d.text((185, 65), f"{self.current_exp}/{self.max_exp}", font=fnt, fill=(0, 0, 0, 255))
+                # level
+                d.text((115, 96), str(self.level), font=fnt, fill=(0, 0, 0, 255))
+                # Rank
+                d.text((113, 130), f"#{self.rank}", font=fnt, fill=(0, 0, 0, 255))
+                d.rectangle((44, 186, 44 + width, 186 + 21), fill=(255, 255, 255, 255))
+                txt.paste(self.avatar, (489, 23))
+
+                out = Image.alpha_composite(base, txt)
+                out = roundify(out, rad=14)
+
+                image = BytesIO()
+                out.save(image, 'PNG')
+                image.seek(0)
+                return image

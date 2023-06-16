@@ -399,3 +399,33 @@ class Tester:
         )
         Image.open(card).save(f"{self.path}.png", "PNG")
         return
+
+    async def test_card4(self, resize: int = 100) -> None:
+        """test card1 with this method
+
+        Parameters
+        ----------
+        resize: :class:`int`
+            The size to resize the avatar to. Default is `100`
+
+        Attributes
+        ----------
+        - `resize`
+
+        Returns
+        -------
+        returns nothing but saves a file in the current directory with the given name
+        """
+
+        card = RankCard(
+            settings=self.settings,
+            avatar=Image.open(self.avatar),
+            level=self.level,
+            username=self.username,
+            current_exp=self.current_exp,
+            max_exp=self.max_exp,
+            rank=self.rank
+        )
+        card = await card.card4(resize=resize)
+        Image.open(card).save(f"{self.path}.png", "PNG")
+        return

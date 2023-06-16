@@ -14,6 +14,7 @@ async def main():
         current_exp=100,
         max_exp=400,
         settings=setting,
+        rank=1,
 
         #This is an example only
         avatar="./avatarimg.png", # provide a path to the avatar image instead of a url.
@@ -32,14 +33,17 @@ async def main():
     # test card3
     await rank.test_card3(resize=100) # resize to 100% i.e. original size
 
+    # test card4
+    await rank.test_card4(resize=100) # resize to 100% i.e. original size
+
     # test sandbox card1
     # card_colour attributes changes the color from black to something else
     # card_colour can be any valid color name (eg. "red") or hex code (eg. "#000000")
     await rank.test_sandbox_card1(resize=100, card_colour="red") # resize to 100% i.e. original size
 
-    # border width and height is uderstandable 
+    # border width and height is uderstandable
     # senstivity changes the transparency of the black box
-    # avatar_frame can be "circle" "square" "hexagon" "curved border" or 
+    # avatar_frame can be "circle" "square" "hexagon" "curved border" or
     # add your own by providing the path to the mask
     # there are a lot of features which might take a long time to explain...
     await rank.test_sandbox_card3(border_height=0, border_width=0, senstivity=100, avatar_frame="./uwudiscord.png")

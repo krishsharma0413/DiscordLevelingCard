@@ -274,6 +274,30 @@ RankCard.card3(resize: int = 100)
 
 <details>
 
+<summary> <span style="color:yellow">card4</span> method</summary>
+
+
+```py
+RankCard.card4(resize: int = 100)
+```
+
+## attribute
+- `resize` : resize the final image. (default is 100, treat it as a percentage.)
+
+## returns
+- `bytes` which can directly be used within `discord.File` class.
+
+
+
+![card4]()
+
+<br>
+
+</details>
+
+
+<details>
+
 <summary> <span style="color:yellow">custom_card1</span> method</summary>
 
 
