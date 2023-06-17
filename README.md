@@ -21,7 +21,7 @@ A library with Rank cards for your discord bot.
 `card3` *same as card2 but with background*
 ![card3](https://user-images.githubusercontent.com/77439837/234203410-a6a970ef-c01c-454b-be67-6dc7c1b2c807.png)
 
-`card4` design from Ogiroid bot
+`card4` *design from [Ogiroid](https://github.com/LewisProjects/Ogiroid/tree/development) bot*
 
 ![card4](https://raw.githubusercontent.com/krishsharma0413/DiscordLevelingCard/main/Examples/custom%20card%20examples/card4_example.png)
 
