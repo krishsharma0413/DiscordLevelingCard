@@ -401,7 +401,7 @@ class Tester:
         return
 
     async def test_card4(self, resize: int = 100) -> None:
-        """test card1 with this method
+        """test card4 with this method
 
         Parameters
         ----------
