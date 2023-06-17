@@ -17,6 +17,9 @@ class Settings:
 
     bar_color: :class:`Optional[str]`
         The color of the XP bar. This can be a hex code or a color name. Default is `white`
+
+    bar_outline_color: :class:`Optional[str]`
+        The color of the XP bar outline(used in card4). This can be a hex code or a color name. Default is `black`
     
     text_color: :class:`Optional[str]`
         The color of the text. This can be a hex code or a color name. Default is `white`
@@ -28,21 +31,24 @@ class Settings:
     ----------
     - `background`
     - `bar_color`
+    - `bar_outline_color`
     - `text_color`
     - `background_color`
     """
 
-    __slots__ = ('background', 'bar_color', 'text_color', 'background_color')
+    __slots__ = ('background', 'bar_color', 'bar_outline_color', 'text_color', 'background_color')
 
     def __init__(
         self,
         background: Optional[Union[PathLike, BufferedIOBase, str]]=None,
         background_color: Optional[str]= "#36393f",
         bar_color: Optional[str] = 'white',
+        bar_outline_color: Optional[str] = 'black',
         text_color: Optional[str] = 'white'
     ) -> None:
         self.background = background
         self.bar_color = bar_color
+        self.bar_outline_color = bar_outline_color
         self.text_color = text_color
         self.background_color = background_color
 

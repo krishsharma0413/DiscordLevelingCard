@@ -4,7 +4,9 @@ import asyncio
 setting = Settings(
     # a path is always preferred over a url atleast in a production environment
     background="./bg.jpg", # this is an example name only
+    background_color="#36393f",
     bar_color="white",
+    bar_outline_color="black",
     text_color="white")
 
 async def main():
@@ -25,16 +27,16 @@ async def main():
     )
 
     # test card1
-    await rank.test_card1(resize=100) # resize to 100% i.e. original size
+    await rank.test_card1(resize=100)  # resize to 100% i.e. original size
 
     # test card2
-    await rank.test_card2(resize=100) # resize to 100% i.e. original size
+    await rank.test_card2(resize=100)  # resize to 100% i.e. original size
 
     # test card3
-    await rank.test_card3(resize=100) # resize to 100% i.e. original size
+    await rank.test_card3(resize=100)  # resize to 100% i.e. original size
 
     # test card4
-    await rank.test_card4(resize=100) # resize to 100% i.e. original size
+    await rank.test_card4(resize=100, use_image=True)  # resize to 100% and to use the custom background
 
     # test sandbox card1
     # card_colour attributes changes the color from black to something else

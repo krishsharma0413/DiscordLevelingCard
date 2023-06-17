@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import Optional, Union
 
 from aiohttp import ClientSession
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
 from .error import InvalidImageUrl
 from pathlib import Path
 from .card_settings import Settings
@@ -61,7 +61,7 @@ class RankCard:
 
     """
 
-    __slots__ = ('background', 'rank', 'background_color', 'text_color', 'bar_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp')
+    __slots__ = ('background', 'rank', 'background_color', 'text_color', 'bar_color', 'bar_outline_color', 'settings', 'avatar', 'level', 'username', 'current_exp', 'max_exp')
 
 
 
@@ -84,6 +84,7 @@ class RankCard:
         self.current_exp = current_exp
         self.max_exp = max_exp
         self.bar_color = settings.bar_color
+        self.bar_outline_color = settings.bar_outline_color
         self.text_color = settings.text_color
 
     @staticmethod
@@ -105,6 +106,46 @@ class RankCard:
                     raise InvalidImageUrl(f"Invalid image url: {url}")
                 data = await response.read()
                 return Image.open(BytesIO(data))
+
+    @staticmethod
+    def mask_circle_transparent(pil_img, blur_radius, offset=0):
+        """Make Image round(CTRL + C, CTRL + V ftw).
+         https://note.nkmk.me/en/python-pillow-square-circle-thumbnail/"""
+        offset = blur_radius * 2 + offset
+        mask = Image.new("L", pil_img.size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse(
+            (
+                offset,
+                offset,
+                pil_img.size[0] - offset,
+                pil_img.size[1] - offset,
+            ),
+            fill=255,
+        )
+        mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
+
+        result = pil_img.copy()
+        result.putalpha(mask)
+
+        return result
+
+    @staticmethod
+    def roundify(im, rad):
+        circle = Image.new("L", (rad * 2, rad * 2), 0)
+        draw = ImageDraw.Draw(circle)
+        draw.ellipse((0, 0, rad * 2, rad * 2), fill=255)
+        alpha = Image.new("L", im.size, 255)
+        w, h = im.size
+        alpha.paste(circle.crop((0, 0, rad, rad)), (0, 0))
+        alpha.paste(circle.crop((0, rad, rad, rad * 2)), (0, h - rad))
+        alpha.paste(circle.crop((rad, 0, rad * 2, rad)), (w - rad, 0))
+        alpha.paste(
+            circle.crop((rad, rad, rad * 2, rad * 2)), (w - rad, h - rad)
+        )
+        im.putalpha(alpha)
+        return im
+
 
 
     async def card1(self, resize: int = 100)-> Union[None, bytes]:
@@ -336,7 +377,7 @@ class RankCard:
         image.seek(0)
         return image
 
-    async def card4(self, resize: int = 100)-> Union[None, bytes]:
+    async def card4(self, resize: int = 100, use_image: bool = True)-> Union[None, bytes]:
         """
         Creates the rank card and returns `bytes`
 
@@ -344,6 +385,10 @@ class RankCard:
         ----------
         resize: :class:`int`
             The percentage to resize the image to. Default is 100
+
+        use_image: :class:`bool`
+            Whether to use your provided background image(True) or use your provided background color(False).
+             Default is True
 
         Attributes
         ----------
@@ -361,79 +406,60 @@ class RankCard:
         else:
             raise TypeError(f"avatar must be a url, not {type(self.avatar)}")
 
+        # use background image
+        if use_image:
+            base = self.background.resize((720, 256))
+        # use background color
+        else:
+            base = Image.new("RGBA", (720, 256), self.background_color)
 
-        with Image.open(path + "/assets/card4.png").convert(
-                    "RGBA"
-            ) as base:  # WINTER VERSION
-                # make a blank image for the text, initialized to transparent text color
-                txt = Image.new("RGBA", base.size, (255, 255, 255, 0))
 
-                self.avatar = self.avatar.convert("RGBA")
+        # make a blank image for the text, initialized to transparent text color
+        txt = Image.new("RGBA", base.size, (255, 255, 255, 0))
 
-                def mask_circle_transparent(pil_img, blur_radius, offset=0):
-                    """Make Image round(CTRL + C, CTRL + V ftw). https://note.nkmk.me/en/python-pillow-square-circle-thumbnail/"""
-                    offset = blur_radius * 2 + offset
-                    mask = Image.new("L", pil_img.size, 0)
-                    draw = ImageDraw.Draw(mask)
-                    draw.ellipse(
-                        (
-                            offset,
-                            offset,
-                            pil_img.size[0] - offset,
-                            pil_img.size[1] - offset,
-                        ),
-                        fill=255,
-                    )
-                    mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
+        self.avatar = self.avatar.convert("RGBA")
 
-                    result = pil_img.copy()
-                    result.putalpha(mask)
+        # makes the avatar ROUND
+        self.avatar = RankCard.mask_circle_transparent(
+            self.avatar.resize((189, 189)), blur_radius=1, offset=0
+        )
 
-                    return result
+        # calculate the width of the exp bar
+        width = abs(round((self.current_exp / self.max_exp) * 418, 2))
 
-                def roundify(im, rad):
-                    circle = Image.new("L", (rad * 2, rad * 2), 0)
-                    draw = ImageDraw.Draw(circle)
-                    draw.ellipse((0, 0, rad * 2, rad * 2), fill=255)
-                    alpha = Image.new("L", im.size, 255)
-                    w, h = im.size
-                    alpha.paste(circle.crop((0, 0, rad, rad)), (0, 0))
-                    alpha.paste(circle.crop((0, rad, rad, rad * 2)), (0, h - rad))
-                    alpha.paste(circle.crop((rad, 0, rad * 2, rad)), (w - rad, 0))
-                    alpha.paste(
-                        circle.crop((rad, rad, rad * 2, rad * 2)), (w - rad, h - rad)
-                    )
-                    im.putalpha(alpha)
-                    return im
+        fnt = ImageFont.truetype(path + "/assets/opensans-semibold.ttf", 24)
+        bold_fnt = ImageFont.truetype(path + "/assets/opensans-bold.ttf", 24)
+        # get a drawing context
+        d = ImageDraw.Draw(txt)
+        # username
+        d.text((44, 32), "Username:", font=bold_fnt, fill=self.text_color)
+        d.text((179, 32), str(self.username), font=fnt, fill=self.text_color)
+        # xp
+        d.text((44, 65), "Experience:", font=bold_fnt, fill=self.text_color)
+        d.text((185, 65), f"{self.current_exp}/{self.max_exp}", font=fnt, fill=self.text_color)
+        # level
+        d.text((44, 96), "Level:", font=bold_fnt, fill=self.text_color)
+        d.text((115, 96), str(self.level), font=fnt, fill=self.text_color)
+        # Rank
+        d.text((44, 130), "Rank:", font=bold_fnt, fill=self.text_color)
+        d.text((113, 130), f"#{self.rank}", font=fnt, fill=self.text_color)
 
-                # makes the avatar ROUND
-                self.avatar = mask_circle_transparent(
-                    self.avatar.resize((189, 189)), blur_radius=1, offset=0
-                )
+        # xp bar
+        # outer bar
 
-                width = abs(round((self.current_exp / self.max_exp) * 418, 2))
-                fnt = ImageFont.truetype(path + "/assets/opensans-semibold.ttf", 24)
-                # get a drawing context
-                d = ImageDraw.Draw(txt)
-                # username
-                d.text((179, 32), str(self.username), font=fnt, fill=(0, 0, 0, 255))
-                # xp
-                d.text((185, 65), f"{self.current_exp}/{self.max_exp}", font=fnt, fill=(0, 0, 0, 255))
-                # level
-                d.text((115, 96), str(self.level), font=fnt, fill=(0, 0, 0, 255))
-                # Rank
-                d.text((113, 130), f"#{self.rank}", font=fnt, fill=(0, 0, 0, 255))
-                d.rectangle((44, 186, 44 + width, 186 + 21), fill=(255, 255, 255, 255))
-                txt.paste(self.avatar, (489, 23))
+        d.rectangle((44, 181, 472, 212), fill=self.bar_outline_color)
+        # inner bar
+        d.rectangle((49, 186, 49 + width, 186 + 21), fill=self.bar_color)
+        txt.paste(self.avatar, (489, 23))
 
-                out = Image.alpha_composite(base, txt)
-                out = roundify(out, rad=14)
+        out = Image.alpha_composite(base, txt)
+        out = RankCard.roundify(out, rad=14)
 
-                if resize != 100:
-                    out = out.resize(
-                        (int(out.size[0] * (resize / 100)), int(out.size[1] * (resize / 100))))
+        if resize != 100:
+            out = out.resize(
+                (int(out.size[0] * (resize / 100)), int(out.size[1] * (resize / 100))))
 
-                image = BytesIO()
-                out.save(image, 'PNG')
-                image.seek(0)
-                return image
+        image = BytesIO()
+        out.save(image, 'PNG')
+        image.seek(0)
+        return image

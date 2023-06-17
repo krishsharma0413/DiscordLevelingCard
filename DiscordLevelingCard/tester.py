@@ -400,13 +400,16 @@ class Tester:
         Image.open(card).save(f"{self.path}.png", "PNG")
         return
 
-    async def test_card4(self, resize: int = 100) -> None:
+    async def test_card4(self, resize: int = 100, use_image: bool = True) -> None:
         """test card4 with this method
 
         Parameters
         ----------
         resize: :class:`int`
             The size to resize the avatar to. Default is `100`
+        use_image: :class:`bool`
+            Whether to use your provided background image(True) or use your provided background color(False).
+             Default is True
 
         Attributes
         ----------
@@ -426,6 +429,6 @@ class Tester:
             max_exp=self.max_exp,
             rank=self.rank
         )
-        card = await card.card4(resize=resize)
+        card = await card.card4(resize=resize, use_image=use_image)
         Image.open(card).save(f"{self.path}.png", "PNG")
         return
